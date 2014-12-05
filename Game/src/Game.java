@@ -7,7 +7,9 @@
 // imports necessary libraries for Java swing
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 
 /**
  * Game Main class that specifies the frame and widgets of the GUI
@@ -18,10 +20,34 @@ public class Game implements Runnable {
 		// even for local variables.
 
 		// Top-level frame in which game components live
-		// Be sure to change "TOP LEVEL FRAME" to the name of your game
+		// Be sure to change "TOP LEVEL FRAME" to the name of your game		
+		
 		final JFrame frame = new JFrame("TOP LEVEL FRAME");
 		frame.setLocation(300, 300);
-
+		
+	    final JButton[][] chessBoardSquares = new JButton[8][8];
+		JPanel chessBoard = new JPanel(new GridLayout(9, 9));
+		chessBoard.setBorder(new LineBorder(Color.BLACK));
+		
+		Insets buttonMargin = new Insets(0,0,0,0);
+		for (int ii = 0; ii < chessBoardSquares.length; ii++) {
+			for (int jj = 0; jj < chessBoardSquares[ii].length; jj++) {
+				JButton b = new JButton();
+				b.setBorder(new LineBorder(Color.BLACK));
+				b.setMargin(buttonMargin);
+			    if ((jj % 2 == 1 && ii % 2 == 1)
+                        //) {
+                        || (jj % 2 == 0 && ii % 2 == 0)) {
+                    b.setBackground(Color.WHITE);
+                } else {
+                    b.setBackground(Color.BLACK);
+                }
+				 chessBoardSquares[jj][ii] = b;
+				 chessBoard.add(chessBoardSquares[jj][ii]);
+			}
+		}
+		frame.add(chessBoard, BorderLayout.CENTER);
+		
 		// Status panel
 		final JPanel status_panel = new JPanel();
 		frame.add(status_panel, BorderLayout.SOUTH);
@@ -30,7 +56,7 @@ public class Game implements Runnable {
 
 		// Main playing area
 		final GameCourt court = new GameCourt(status);
-		frame.add(court, BorderLayout.CENTER);
+		frame.add(chessBoard, BorderLayout.CENTER);
 
 		// Reset button
 		final JPanel control_panel = new JPanel();
