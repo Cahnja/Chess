@@ -35,12 +35,18 @@ public class Game implements Runnable {
 				JButton b = new JButton();
 				b.setBorder(new LineBorder(Color.BLACK));
 				b.setMargin(buttonMargin);
+				ImageIcon icon = new ImageIcon();
+                b.setIcon(icon);
 			    if ((jj % 2 == 1 && ii % 2 == 1)
                         //) {
                         || (jj % 2 == 0 && ii % 2 == 0)) {
                     b.setBackground(Color.WHITE);
+                    b.setOpaque(true);
+                    System.out.println("hello");
                 } else {
                     b.setBackground(Color.BLACK);
+                    b.setOpaque(true);
+                    System.out.println("goodbye");
                 }
 				 chessBoardSquares[jj][ii] = b;
 				 chessBoard.add(chessBoardSquares[jj][ii]);
