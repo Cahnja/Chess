@@ -12,68 +12,64 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
  * Game Main class that specifies the frame and widgets of the GUI
  */
-public class Game implements Runnable, MouseListener, MouseMotionListener {
+public class Game implements Runnable {
 	
 	boolean pressed;
 	ImageIcon image; 
 	JButton butt; 
-	JLayeredPane layeredPane;
-	JPanel chessBoard;
+	int xAdjustment;
+	int yAdjustment;
+	JButton[][] chessBoardSquares;
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
+    
+    final ImageIcon white_white_rook = new ImageIcon("white_white_rook.png");
+    final ImageIcon white_black_rook = new ImageIcon("white_black_rook.png");
+    final ImageIcon white_black_knight = new ImageIcon("white_black_knight.png");
+    final ImageIcon white_white_knight = new ImageIcon("white_white_knight.png");
+    final ImageIcon white_black_bishop = new ImageIcon("white_black_bishop.png");
+    final ImageIcon white_white_bishop = new ImageIcon("white_white_bishop.png");
+    final ImageIcon white_black_pawn = new ImageIcon("white_black_pawn.png");
+    final ImageIcon white_white_pawn = new ImageIcon("white_white_pawn.png");
+    final ImageIcon white_black_king = new ImageIcon("white_black_king.png");
+    final ImageIcon white_white_queen = new ImageIcon("white_white_queen.png");
+    final ImageIcon black_white_rook = new ImageIcon("black_white_rook.png");
+    final ImageIcon black_black_rook = new ImageIcon("black_black_rook.png");
+    final ImageIcon black_black_knight = new ImageIcon("black_black_knight.png");
+    final ImageIcon black_white_knight = new ImageIcon("black_white_knight.png");
+    final ImageIcon black_black_bishop = new ImageIcon("black_black_bishop.png");
+    final ImageIcon black_white_bishop = new ImageIcon("black_white_bishop.png");
+    final ImageIcon black_black_pawn = new ImageIcon("black_black_pawn.png");
+    final ImageIcon black_white_pawn = new ImageIcon("black_white_pawn.png");
+    final ImageIcon black_white_king = new ImageIcon("black_white_king.png");
+    final ImageIcon black_black_queen = new ImageIcon("black_black_queen.png");   
 
 	public void run() {
-		Game();
-	}
-
-	public void Game() {
 		// NOTE : recall that the 'final' keyword notes inmutability
 		// even for local variables.
 
 		// Top-level frame in which game components live
 		// Be sure to change "TOP LEVEL FRAME" to the name of your game		
 		
-		pressed = true;
+		pressed = false;
 		image = new ImageIcon("black_white_rook.png");
 		
 	    final String COLS = "ABCDEFGH";
-	    layeredPane = new JLayeredPane();
-	    layeredPane.addMouseListener(this);
-	    layeredPane.addMouseMotionListener(this);
-
-	    final ImageIcon white_white_rook = new ImageIcon("white_white_rook.png");
-	    final ImageIcon white_black_rook = new ImageIcon("white_black_rook.png");
-	    final ImageIcon white_black_knight = new ImageIcon("white_black_knight.png");
-	    final ImageIcon white_white_knight = new ImageIcon("white_white_knight.png");
-	    final ImageIcon white_black_bishop = new ImageIcon("white_black_bishop.png");
-	    final ImageIcon white_white_bishop = new ImageIcon("white_white_bishop.png");
-	    final ImageIcon white_black_pawn = new ImageIcon("white_black_pawn.png");
-	    final ImageIcon white_white_pawn = new ImageIcon("white_white_pawn.png");
-	    final ImageIcon white_black_king = new ImageIcon("white_black_king.png");
-	    final ImageIcon white_white_queen = new ImageIcon("white_white_queen.png");
-	    final ImageIcon black_white_rook = new ImageIcon("black_white_rook.png");
-	    final ImageIcon black_black_rook = new ImageIcon("black_black_rook.png");
-	    final ImageIcon black_black_knight = new ImageIcon("black_black_knight.png");
-	    final ImageIcon black_white_knight = new ImageIcon("black_white_knight.png");
-	    final ImageIcon black_black_bishop = new ImageIcon("black_black_bishop.png");
-	    final ImageIcon black_white_bishop = new ImageIcon("black_white_bishop.png");
-	    final ImageIcon black_black_pawn = new ImageIcon("black_black_pawn.png");
-	    final ImageIcon black_white_pawn = new ImageIcon("black_white_pawn.png");
-	    final ImageIcon black_white_king = new ImageIcon("black_white_king.png");
-	    final ImageIcon black_black_queen = new ImageIcon("black_black_queen.png");   
 		
 		final JFrame frame = new JFrame("TOP LEVEL FRAME");
 		frame.setLocation(300, 300);
 		
-	    final JButton[][] chessBoardSquares = new JButton[8][8];
-		chessBoard = new JPanel(new GridLayout(9, 9));
-		layeredPane.add(chessBoard, JLayeredPane.DEFAULT_LAYER);
+		JLayeredPane layeredPane = new JLayeredPane();
+	    chessBoardSquares = new JButton[8][8];
+		JPanel chessBoard = new JPanel(new GridLayout(9, 9));
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
+		layeredPane.add(chessBoard);
 		
 		Insets buttonMargin = new Insets(0,0,0,0);
 		for (int ii = 0; ii < chessBoardSquares.length; ii++) {
@@ -117,6 +113,8 @@ public class Game implements Runnable, MouseListener, MouseMotionListener {
             }
         }
         
+        System.out.println(chessBoard.getComponentCount());
+        
         JButton a1 = (JButton) chessBoard.getComponent(10);
         a1.setIcon(black_white_rook);
         JButton b1 = (JButton) chessBoard.getComponent(11);
@@ -149,6 +147,45 @@ public class Game implements Runnable, MouseListener, MouseMotionListener {
         g2.setIcon(black_black_pawn);
         JButton h2 = (JButton) chessBoard.getComponent(26);
         h2.setIcon(black_white_pawn);
+        
+		layeredPane.addMouseListener(new MouseAdapter() {
+       	 public void mouseClicked(MouseEvent e) {
+       		System.out.println("please");
+		    	if (pressed == true) { 
+		    		Component c = chessBoard.getComponentAt(e.getX(), e.getY());
+		    		System.out.println(
+		    				chessBoard.getComponentAt(e.getX(), e.getY()).equals(
+		    				chessBoard.getComponent(10))
+		    			);
+		    		System.out.println(c.toString());
+
+		    		
+		    		}
+		    	}
+       });	
+		
+        chessBoard.addMouseListener(new MouseAdapter() {
+        	 public void mouseClicked(MouseEvent e) {
+        		System.out.println("fuck");
+ 		    	if (pressed == true) { 
+ 		    		Component c = chessBoard.getComponentAt(e.getX(), e.getY());
+ 		    		System.out.println(
+ 		    				chessBoard.getComponentAt(e.getX(), e.getY()).equals(
+ 		    				chessBoard.getComponent(10))
+ 		    			);
+ 		    		System.out.println(c.toString());
+ 		    		System.out.println(e.getX());
+ 		    		System.out.println(e.getY());
+ 		    		
+ 		    		}
+ 		    	}
+        });	
+        
+        for (int i = 0; i < 8; i++) {
+        	for (int j = 0; j < 8; j++) {
+        		listenUp(i, j);	
+        	}
+        }
              
 		frame.add(chessBoard, BorderLayout.CENTER);
 		
@@ -188,48 +225,24 @@ public class Game implements Runnable, MouseListener, MouseMotionListener {
 		// Start game
 		court.reset();
 	}
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		System.out.println("hello");
-		
+
+	private void listenUp(int i, int j) {
+		chessBoardSquares[i][j].addMouseListener(
+				new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		    	if (pressed == true) { 
+		    		pressed = false;
+		    		chessBoardSquares[i][j].setIcon(image);
+		    		}
+		    	else {
+		    		pressed = true;
+		    		image = (ImageIcon) chessBoardSquares[i][j].getIcon();
+		    	}
+		    }
+		   });
 	}
 
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		System.out.println("hello");
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		System.out.println("hello");
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		System.out.println("hello");
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		System.out.println("hello");
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	/*
 	 * Main method run to start and run the game Initializes the GUI elements
 	 * specified in Game and runs it IMPORTANT: Do NOT delete! You MUST include
@@ -238,5 +251,4 @@ public class Game implements Runnable, MouseListener, MouseMotionListener {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Game());
 	}
-
 }
