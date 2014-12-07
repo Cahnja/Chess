@@ -12,26 +12,40 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
+import java.awt.event.MouseEvent;
+
 /**
  * Game Main class that specifies the frame and widgets of the GUI
  */
-public class Game implements Runnable {
+public class Game implements Runnable, MouseListener, MouseMotionListener {
 	
 	boolean pressed;
+	ImageIcon image; 
+	JButton butt; 
+	JLayeredPane layeredPane;
+	JPanel chessBoard;
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
 
 	public void run() {
+		Game();
+	}
+
+	public void Game() {
 		// NOTE : recall that the 'final' keyword notes inmutability
 		// even for local variables.
 
 		// Top-level frame in which game components live
 		// Be sure to change "TOP LEVEL FRAME" to the name of your game		
 		
-		pressed = false;
+		pressed = true;
+		image = new ImageIcon("black_white_rook.png");
 		
 	    final String COLS = "ABCDEFGH";
-	    
+	    layeredPane = new JLayeredPane();
+	    layeredPane.addMouseListener(this);
+	    layeredPane.addMouseMotionListener(this);
+
 	    final ImageIcon white_white_rook = new ImageIcon("white_white_rook.png");
 	    final ImageIcon white_black_rook = new ImageIcon("white_black_rook.png");
 	    final ImageIcon white_black_knight = new ImageIcon("white_black_knight.png");
@@ -57,7 +71,8 @@ public class Game implements Runnable {
 		frame.setLocation(300, 300);
 		
 	    final JButton[][] chessBoardSquares = new JButton[8][8];
-		JPanel chessBoard = new JPanel(new GridLayout(9, 9));
+		chessBoard = new JPanel(new GridLayout(9, 9));
+		layeredPane.add(chessBoard, JLayeredPane.DEFAULT_LAYER);
 		chessBoard.setBorder(new LineBorder(Color.BLACK));
 		
 		Insets buttonMargin = new Insets(0,0,0,0);
@@ -74,11 +89,9 @@ public class Game implements Runnable {
                         || (jj % 2 == 0 && ii % 2 == 0)) {
                     b.setBackground(Color.WHITE);
                     b.setOpaque(true);
-                    System.out.println("hello");
                 } else {
                     b.setBackground(Color.BLACK);
                     b.setOpaque(true);
-                    System.out.println("goodbye");
                 }
 				 chessBoardSquares[jj][ii] = b;
 			}
@@ -136,7 +149,7 @@ public class Game implements Runnable {
         g2.setIcon(black_black_pawn);
         JButton h2 = (JButton) chessBoard.getComponent(26);
         h2.setIcon(black_white_pawn);
-      
+             
 		frame.add(chessBoard, BorderLayout.CENTER);
 		
 		// Status panel
@@ -175,7 +188,48 @@ public class Game implements Runnable {
 		// Start game
 		court.reset();
 	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("hello");
+		
+	}
 
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		System.out.println("hello");
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		System.out.println("hello");
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		System.out.println("hello");
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		System.out.println("hello");
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/*
 	 * Main method run to start and run the game Initializes the GUI elements
 	 * specified in Game and runs it IMPORTANT: Do NOT delete! You MUST include
@@ -184,4 +238,5 @@ public class Game implements Runnable {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Game());
 	}
+
 }
