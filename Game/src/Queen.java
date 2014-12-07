@@ -5,12 +5,12 @@ public class Queen extends Piece {
 		super(string);
 	}
 
-	public Queen(String string, int i, int j) {
-		super(string,i,j);
+	public Queen(String string, int i, int j, int color) {
+		super(string,i,j, color);
 
 	}
 	
-	public boolean isLegal(int i, int j) {
+	public boolean isLegal(int i, int j, int color) {
 		return true;
 	}
 

@@ -5,11 +5,11 @@ public class Rook extends Piece {
 		super(string);
 	}
 
-	public Rook(String string, int i, int j) {
-		super(string, i, j);
+	public Rook(String string, int i, int j, int color) {
+		super(string, i, j, color);
 	}
 
-	public boolean isLegal(int i, int j) {
+	public boolean isLegal(int i, int j, int occupied, int color) {
 		return true;
 	}
 }

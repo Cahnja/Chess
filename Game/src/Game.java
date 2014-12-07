@@ -29,42 +29,43 @@ public class Game implements Runnable {
 	JLabel status;
 	int image_x; 
 	int image_y;
+	int image_color;
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
     
-    final Rook black_rook = new Rook("black_rook.png", 1, 1);
-    final Knight black_knight = new Knight("black_knight.png", 2, 1);
-    final Bishop black_bishop = new Bishop("black_bishop.png", 3, 1);
-    final Queen black_queen = new Queen("black_queen.png",4, 1);   
-    final King black_king = new King("black_king.png", 5, 1);
-    final Knight black_knight_2 = new Knight("black_knight.png", 6, 1);
-    final Bishop black_bishop_2 = new Bishop("black_bishop.png", 7, 1);
-    final Rook black_rook_2 = new Rook("black_rook.png", 8, 1);
-    final Pawn black_pawn = new Pawn("black_pawn.png",1, 2);
-    final Pawn black_pawn_2 = new Pawn("black_pawn.png",2, 2);
-    final Pawn black_pawn_3 = new Pawn("black_pawn.png",3, 2);
-    final Pawn black_pawn_4 = new Pawn("black_pawn.png",4, 2);
-    final Pawn black_pawn_5 = new Pawn("black_pawn.png",5, 2);
-    final Pawn black_pawn_6 = new Pawn("black_pawn.png",6, 2);
-    final Pawn black_pawn_7 = new Pawn("black_pawn.png",7, 2);
-    final Pawn black_pawn_8 = new Pawn("black_pawn.png",8, 2);
+    final Rook black_rook = new Rook("black_rook.png", 1, 1, 0);
+    final Knight black_knight = new Knight("black_knight.png", 2, 1, 0);
+    final Bishop black_bishop = new Bishop("black_bishop.png", 3, 1, 0);
+    final Queen black_queen = new Queen("black_queen.png",4, 1, 0);   
+    final King black_king = new King("black_king.png", 5, 1, 0);
+    final Bishop black_bishop_2 = new Bishop("black_bishop.png", 6, 1, 0);
+    final Knight black_knight_2 = new Knight("black_knight.png", 7, 1, 0);
+    final Rook black_rook_2 = new Rook("black_rook.png", 8, 1, 0);
+    final Pawn black_pawn = new Pawn("black_pawn.png",1, 2, 0);
+    final Pawn black_pawn_2 = new Pawn("black_pawn.png",2, 2, 0);
+    final Pawn black_pawn_3 = new Pawn("black_pawn.png",3, 2, 0);
+    final Pawn black_pawn_4 = new Pawn("black_pawn.png",4, 2, 0);
+    final Pawn black_pawn_5 = new Pawn("black_pawn.png",5, 2, 0);
+    final Pawn black_pawn_6 = new Pawn("black_pawn.png",6, 2, 0);
+    final Pawn black_pawn_7 = new Pawn("black_pawn.png",7, 2, 0);
+    final Pawn black_pawn_8 = new Pawn("black_pawn.png",8, 2, 0);
     
-    final Rook white_rook = new Rook("white_rook.png");
-    final Knight white_knight = new Knight("white_knight.png");
-    final Bishop white_bishop = new Bishop("white_bishop.png");
-    final Queen white_queen = new Queen("white_queen.png");   
-    final King white_king = new King("white_king.png");
-    final Bishop white_bishop_2 = new Bishop("white_bishop.png");
-    final Knight white_knight_2 = new Knight("white_knight.png");
-    final Rook white_rook_2 = new Rook("white_rook.png");
-    final Pawn white_pawn = new Pawn("white_pawn.png");
-    final Pawn white_pawn_2 = new Pawn("white_pawn.png");
-    final Pawn white_pawn_3 = new Pawn("white_pawn.png");
-    final Pawn white_pawn_4 = new Pawn("white_pawn.png");
-    final Pawn white_pawn_5 = new Pawn("white_pawn.png");
-    final Pawn white_pawn_6 = new Pawn("white_pawn.png");
-    final Pawn white_pawn_7 = new Pawn("white_pawn.png");
-    final Pawn white_pawn_8 = new Pawn("white_pawn.png");
+    final Rook white_rook = new Rook("white_rook.png", 1, 8, 1);
+    final Knight white_knight = new Knight("white_knight.png", 2, 8, 1);
+    final Bishop white_bishop = new Bishop("white_bishop.png", 3, 8, 1);
+    final Queen white_queen = new Queen("white_queen.png", 4, 8, 1);   
+    final King white_king = new King("white_king.png", 5, 8, 1);
+    final Bishop white_bishop_2 = new Bishop("white_bishop.png", 6, 8, 1);
+    final Knight white_knight_2 = new Knight("white_knight.png", 7, 8, 1);
+    final Rook white_rook_2 = new Rook("white_rook.png", 8, 8, 1);
+    final Pawn white_pawn = new Pawn("white_pawn.png", 1, 7, 1);
+    final Pawn white_pawn_2 = new Pawn("white_pawn.png", 2, 7, 1);
+    final Pawn white_pawn_3 = new Pawn("white_pawn.png", 3, 7, 1);
+    final Pawn white_pawn_4 = new Pawn("white_pawn.png", 4, 7, 1);
+    final Pawn white_pawn_5 = new Pawn("white_pawn.png", 5, 7, 1);
+    final Pawn white_pawn_6 = new Pawn("white_pawn.png", 6, 7, 1);
+    final Pawn white_pawn_7 = new Pawn("white_pawn.png", 7, 7, 1);
+    final Pawn white_pawn_8 = new Pawn("white_pawn.png", 8, 7, 1);
 
 
 	public void run() {
@@ -281,22 +282,36 @@ public class Game implements Runnable {
 				new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
+		    	int occupied;
+		    	int color = 2; 
+		    	ImageIcon blank = new ImageIcon(new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)); 
 		    	if (pressed == true) { 
 		    		pressed = false;
-		    		if (image.isLegal(i+1,j+1)) {		    		
-		    			chessBoardSquares[i][j].setIcon(image);
-		    			chessBoardSquares[image_x][image_y].setIcon(new ImageIcon(new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)));
+		    		occupied = 0;
+		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
+		    			occupied = 1;
+		    			color = ((Piece) chessBoardSquares[i][j].getIcon()).col;
+		    		}
+			    		if (image.isLegal(i+1,j+1,occupied, color)) {
+			    			if (image.y_pos == 8 && image instanceof Pawn && image.col == 0) {
+			    				image = new Queen("black_queen.png",image.x_pos, 8, 0);
+			    			}
+			    			if (image.y_pos == 1 && image instanceof Pawn && image.col == 1) {
+			    				image = new Queen("white_queen.png",image.x_pos, 1, 0);
+			    			}
+			    			chessBoardSquares[i][j].setIcon(image);
+			    			chessBoardSquares[image_x][image_y].setIcon(blank);
 		    		}
 		    		else {
 		    			status = new JLabel("invalid");
 		    		}
 		    	}
 		    	else {
-		    		pressed = true;
 		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
 		    			image = (Piece) chessBoardSquares[i][j].getIcon();
 		    			image_x = i; 
 		    			image_y = j;
+			    		pressed = true;
 		    		}
 		    		else {
 		    			//stub
