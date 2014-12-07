@@ -13,7 +13,8 @@ public class King extends Piece {
 		if (occupied == 0 || (occupied == 1 && this.col != color)) {
 			int xdiff = Math.abs(this.x_pos - i);
 			int ydiff = Math.abs(this.y_pos - j);
-			if (xdiff + ydiff == 1) {
+			System.out.print("kingmove");
+			if (xdiff + ydiff == 1 || (xdiff == 1 && ydiff == 1) ){
 				this.x_pos = i; 
 				this.y_pos = j; 
 				return true;
