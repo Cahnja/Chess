@@ -6,6 +6,6 @@ public class Piece extends ImageIcon{
 	}
 	
 	public Piece(String string) { 
-		super();
+		super(string);
 	}
 }
