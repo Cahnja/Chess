@@ -283,15 +283,43 @@ public class Game implements Runnable {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
 		    	int occupied;
+		    	int x_occupied;
+		    	int y_occupied;
 		    	int color = 2; 
+		    	int diff; 
+		    	int k; 
 		    	ImageIcon blank = new ImageIcon(new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)); 
 		    	if (pressed == true) { 
 		    		pressed = false;
 		    		occupied = 0;
+			    	x_occupied = 0; 
+			    	y_occupied = 0;
+
 		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
 		    			occupied = 1;
 		    			color = ((Piece) chessBoardSquares[i][j].getIcon()).col;
 		    		}
+		    		if (image instanceof Rook) {
+		    			if (image.x_pos - i == 1) {
+			    			diff = Math.abs(image.y_pos - (j+1)); 
+			    			k = Math.min(image.y_pos-1, j);
+			    			for (int l = 1; l<diff; l++) {
+			    				if (chessBoardSquares[i][k+l].getIcon() instanceof Piece) {
+					    			occupied = 2;
+			    				}
+			    			}		
+		    			}
+		    			if (image.y_pos - j == 1) {
+			    			diff = Math.abs(image.x_pos - (i+1)); 
+			    			k = Math.min(image.x_pos-1, i);
+			    			for (int l = 1; l<diff; l++) {
+			    				if (chessBoardSquares[k+l][j].getIcon() instanceof Piece) {
+					    			occupied = 2;
+			    				}
+			    			}		
+		    			}
+		    		}
+		    		
 			    		if (image.isLegal(i+1,j+1,occupied, color)) {
 			    			if (image.y_pos == 8 && image instanceof Pawn && image.col == 0) {
 			    				image = new Queen("black_queen.png",image.x_pos, 8, 0);
