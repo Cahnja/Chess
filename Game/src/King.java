@@ -9,8 +9,22 @@ public class King extends Piece {
 		super(string,i,j, color);
 	}
 	
-	public boolean isLegal(int i, int j, int color) {
-		return true;
+	public boolean isLegal(int i, int j, int occupied, int color) {
+		if (occupied == 0 || (occupied == 1 && this.col != color)) {
+			int xdiff = Math.abs(this.x_pos - i);
+			int ydiff = Math.abs(this.y_pos - j);
+			if (xdiff + ydiff == 1) {
+				this.x_pos = i; 
+				this.y_pos = j; 
+				return true;
+			}
+			else { 
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
 	}
 
 }

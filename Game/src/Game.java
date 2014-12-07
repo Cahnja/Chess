@@ -30,6 +30,8 @@ public class Game implements Runnable {
 	int image_x; 
 	int image_y;
 	int image_color;
+	King blackking;
+	King whiteking; 
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
     
@@ -77,11 +79,13 @@ public class Game implements Runnable {
 		
 		pressed = false;
 		image = new Piece("black_rook.png");
-		
+
 	    final String COLS = "ABCDEFGH";
-		
 		final JFrame frame = new JFrame("TOP LEVEL FRAME");
 		frame.setLocation(300, 300);
+		
+		blackking = black_king;
+		whiteking = white_king;
 		
 		JLayeredPane layeredPane = new JLayeredPane();
 	    chessBoardSquares = new JButton[8][8];
@@ -299,13 +303,14 @@ public class Game implements Runnable {
 		    			occupied = 1;
 		    			color = ((Piece) chessBoardSquares[i][j].getIcon()).col;
 		    		}
-		    		if (image instanceof Rook) {
+		    		if (image instanceof Rook || image instanceof Queen) {
 		    			if (image.x_pos - i == 1) {
 			    			diff = Math.abs(image.y_pos - (j+1)); 
 			    			k = Math.min(image.y_pos-1, j);
 			    			for (int l = 1; l<diff; l++) {
 			    				if (chessBoardSquares[i][k+l].getIcon() instanceof Piece) {
 					    			occupied = 2;
+					    			System.out.println("rooknotjumping_1");
 			    				}
 			    			}		
 		    			}
@@ -315,11 +320,78 @@ public class Game implements Runnable {
 			    			for (int l = 1; l<diff; l++) {
 			    				if (chessBoardSquares[k+l][j].getIcon() instanceof Piece) {
 					    			occupied = 2;
+					    			System.out.println("rooknotjumping_2");
 			    				}
 			    			}		
 		    			}
 		    		}
 		    		
+		    		if (image instanceof Bishop || image instanceof Queen) {
+		    			int y_diff = image.y_pos - (j+1); 
+		    			int x_diff = image.x_pos - (i+1); 
+		    			System.out.println("div");
+		    			System.out.println("" + x_diff);
+		    			System.out.println("" + y_diff);
+		    			if (x_diff > 0 && y_diff > 0) {
+			    			for (int l = 1; l<Math.abs(x_diff); l++) {
+				    			System.out.println("" + (image.x_pos-l-1));
+				    			System.out.println("" + (image.y_pos-l-1));
+			    				if (chessBoardSquares[image.x_pos-1-l][image.y_pos-1-l].getIcon() instanceof Piece) {
+					    			occupied = 2;
+					    			System.out.println("bishopnotjumping_1");
+			    				}
+			    			}		
+		    			}
+		    			if (x_diff > 0 && y_diff < 0) {
+			    			for (int l = 1; l<Math.abs(x_diff); l++) {
+				    			System.out.println("" + (image.x_pos+l-1));
+				    			System.out.println("" + (image.y_pos+l-1));
+			    				if (chessBoardSquares[image.x_pos-1-l][image.y_pos-1+l].getIcon() instanceof Piece) {
+					    			occupied = 2;
+					    			System.out.println("bishopnotjumping_2");
+			    				}
+			    			}
+		    			}
+		    			if (x_diff < 0 && y_diff > 0) {
+			    			for (int l = 1; l<Math.abs(x_diff); l++) {
+				    			System.out.println("" + (image.x_pos+l-1));
+				    			System.out.println("" + (image.y_pos+l-1));
+			    				if (chessBoardSquares[image.x_pos-1+l][image.y_pos-1-l].getIcon() instanceof Piece) {
+					    			occupied = 2;
+					    			System.out.println("bishopnotjumping_3");
+			    				}
+			    			}
+		    			}
+		    			if (x_diff < 0 && y_diff < 0) {
+			    			for (int l = 1; l<Math.abs(x_diff); l++) {
+				    			System.out.println("" + (image.x_pos+l-1));
+				    			System.out.println("" + (image.y_pos+l-1));
+			    				if (chessBoardSquares[image.x_pos-1+l][image.y_pos-1+l].getIcon() instanceof Piece) {
+					    			occupied = 2;
+					    			System.out.println("bishopnotjumping_4");
+			    				}
+			    			}
+		    			}
+
+		    		}
+		    		
+		    		if (image instanceof King) {
+		    			if (image.col == 0) {
+		    				if (Math.abs(i+1 - whiteking.x_pos) < 2 &&
+		    						Math.abs(j+1-whiteking.y_pos) < 2) {
+		    					occupied = 2;
+		    					System.out.println("toocloseblack");
+		    				}
+		    			}
+		    			else {
+		    				if (Math.abs(i+1 - blackking.x_pos) < 2 &&
+		    						Math.abs(j+1-blackking.y_pos) < 2) {
+		    					occupied = 2;
+		    					System.out.println("tooclosewhite");
+		    				}
+		    			}
+		    		}
+	
 			    		if (image.isLegal(i+1,j+1,occupied, color)) {
 			    			if (image.y_pos == 8 && image instanceof Pawn && image.col == 0) {
 			    				image = new Queen("black_queen.png",image.x_pos, 8, 0);
@@ -327,6 +399,20 @@ public class Game implements Runnable {
 			    			if (image.y_pos == 1 && image instanceof Pawn && image.col == 1) {
 			    				image = new Queen("white_queen.png",image.x_pos, 1, 0);
 			    			}
+			    			
+				    		if (image instanceof King) {
+				    			if (image.col == 0) {
+				    				blackking = new King("black_king.png", i+1, j+1, 0);
+				    				System.out.println("blackmoved");
+				    				System.out.println("" + (i+1));
+				    				System.out.println("" + (j+1));
+
+
+				    			}
+				    			else {
+				    				whiteking = new King("white_king.png", i+1, j+1, 1);
+				    			}
+				    		}
 			    			chessBoardSquares[i][j].setIcon(image);
 			    			chessBoardSquares[image_x][image_y].setIcon(blank);
 		    		}
