@@ -21,26 +21,50 @@ import java.awt.event.MouseEvent;
 public class Game implements Runnable {
 	
 	boolean pressed;
-	ImageIcon image; 
+	Piece image; 
 	JButton butt; 
 	int xAdjustment;
 	int yAdjustment;
 	JButton[][] chessBoardSquares;
+	JLabel status;
+	int image_x; 
+	int image_y;
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
     
-    final Rook black_rook = new Rook("black_rook.png");
-    final Knight black_knight = new Knight("black_knight.png");
-    final Bishop black_bishop = new Bishop("black_bishop.png");
-    final Pawn black_pawn = new Pawn("black_pawn.png");
-    final King black_king = new King("black_king.png");
-    final Queen black_queen = new Queen("black_queen.png");   
+    final Rook black_rook = new Rook("black_rook.png", 1, 1);
+    final Knight black_knight = new Knight("black_knight.png", 2, 1);
+    final Bishop black_bishop = new Bishop("black_bishop.png", 3, 1);
+    final Queen black_queen = new Queen("black_queen.png",4, 1);   
+    final King black_king = new King("black_king.png", 5, 1);
+    final Knight black_knight_2 = new Knight("black_knight.png", 6, 1);
+    final Bishop black_bishop_2 = new Bishop("black_bishop.png", 7, 1);
+    final Rook black_rook_2 = new Rook("black_rook.png", 8, 1);
+    final Pawn black_pawn = new Pawn("black_pawn.png",1, 2);
+    final Pawn black_pawn_2 = new Pawn("black_pawn.png",2, 2);
+    final Pawn black_pawn_3 = new Pawn("black_pawn.png",3, 2);
+    final Pawn black_pawn_4 = new Pawn("black_pawn.png",4, 2);
+    final Pawn black_pawn_5 = new Pawn("black_pawn.png",5, 2);
+    final Pawn black_pawn_6 = new Pawn("black_pawn.png",6, 2);
+    final Pawn black_pawn_7 = new Pawn("black_pawn.png",7, 2);
+    final Pawn black_pawn_8 = new Pawn("black_pawn.png",8, 2);
+    
     final Rook white_rook = new Rook("white_rook.png");
     final Knight white_knight = new Knight("white_knight.png");
     final Bishop white_bishop = new Bishop("white_bishop.png");
-    final Pawn white_pawn = new Pawn("white_pawn.png");
-    final King white_king = new King("white_king.png");
     final Queen white_queen = new Queen("white_queen.png");   
+    final King white_king = new King("white_king.png");
+    final Bishop white_bishop_2 = new Bishop("white_bishop.png");
+    final Knight white_knight_2 = new Knight("white_knight.png");
+    final Rook white_rook_2 = new Rook("white_rook.png");
+    final Pawn white_pawn = new Pawn("white_pawn.png");
+    final Pawn white_pawn_2 = new Pawn("white_pawn.png");
+    final Pawn white_pawn_3 = new Pawn("white_pawn.png");
+    final Pawn white_pawn_4 = new Pawn("white_pawn.png");
+    final Pawn white_pawn_5 = new Pawn("white_pawn.png");
+    final Pawn white_pawn_6 = new Pawn("white_pawn.png");
+    final Pawn white_pawn_7 = new Pawn("white_pawn.png");
+    final Pawn white_pawn_8 = new Pawn("white_pawn.png");
 
 
 	public void run() {
@@ -51,7 +75,7 @@ public class Game implements Runnable {
 		// Be sure to change "TOP LEVEL FRAME" to the name of your game		
 		
 		pressed = false;
-		image = new ImageIcon("black_white_rook.png");
+		image = new Piece("black_rook.png");
 		
 	    final String COLS = "ABCDEFGH";
 		
@@ -119,27 +143,28 @@ public class Game implements Runnable {
         JButton e1 = (JButton) chessBoard.getComponent(14);
         e1.setIcon(black_king);
         JButton f1 = (JButton) chessBoard.getComponent(15);
-        f1.setIcon(black_bishop);
+        f1.setIcon(black_bishop_2);
         JButton g1 = (JButton) chessBoard.getComponent(16);
-        g1.setIcon(black_knight);
+        g1.setIcon(black_knight_2);
         JButton h1 = (JButton) chessBoard.getComponent(17);
-        h1.setIcon(black_rook);
+        h1.setIcon(black_rook_2);
         JButton a2 = (JButton) chessBoard.getComponent(19);
         a2.setIcon(black_pawn);
         JButton b2 = (JButton) chessBoard.getComponent(20);
-        b2.setIcon(black_pawn);
+        b2.setIcon(black_pawn_2);
         JButton c2 = (JButton) chessBoard.getComponent(21);
-        c2.setIcon(black_pawn);
+        c2.setIcon(black_pawn_3);
         JButton d2 = (JButton) chessBoard.getComponent(22);
-        d2.setIcon(black_pawn);
+        d2.setIcon(black_pawn_4);
         JButton e2 = (JButton) chessBoard.getComponent(23);
-        e2.setIcon(black_pawn);
+        e2.setIcon(black_pawn_5);
         JButton f2 = (JButton) chessBoard.getComponent(24);
-        f2.setIcon(black_pawn);
+        f2.setIcon(black_pawn_6);
         JButton g2 = (JButton) chessBoard.getComponent(25);
-        g2.setIcon(black_pawn);
+        g2.setIcon(black_pawn_7);
         JButton h2 = (JButton) chessBoard.getComponent(26);
-        h2.setIcon(black_pawn);
+        h2.setIcon(black_pawn_8);
+        
         JButton a8 = (JButton) chessBoard.getComponent(73);
         a8.setIcon(white_rook);
         JButton b8 = (JButton) chessBoard.getComponent(74);
@@ -151,27 +176,27 @@ public class Game implements Runnable {
         JButton e8 = (JButton) chessBoard.getComponent(77);
         e8.setIcon(white_king);
         JButton f8 = (JButton) chessBoard.getComponent(78);
-        f8.setIcon(white_bishop);
+        f8.setIcon(white_bishop_2);
         JButton g8 = (JButton) chessBoard.getComponent(79);
-        g8.setIcon(white_knight);
+        g8.setIcon(white_knight_2);
         JButton h8 = (JButton) chessBoard.getComponent(80);
-        h8.setIcon(white_rook);
+        h8.setIcon(white_rook_2);
         JButton a7 = (JButton) chessBoard.getComponent(64);
         a7.setIcon(white_pawn);
         JButton b7 = (JButton) chessBoard.getComponent(65);
-        b7.setIcon(white_pawn);
+        b7.setIcon(white_pawn_2);
         JButton c7 = (JButton) chessBoard.getComponent(66);
-        c7.setIcon(white_pawn);
+        c7.setIcon(white_pawn_3);
         JButton d7 = (JButton) chessBoard.getComponent(67);
-        d7.setIcon(white_pawn);
+        d7.setIcon(white_pawn_4);
         JButton e7 = (JButton) chessBoard.getComponent(68);
-        e7.setIcon(white_pawn);
+        e7.setIcon(white_pawn_5);
         JButton f7 = (JButton) chessBoard.getComponent(69);
-        f7.setIcon(white_pawn);
+        f7.setIcon(white_pawn_6);
         JButton g7 = (JButton) chessBoard.getComponent(70);
-        g7.setIcon(white_pawn);
+        g7.setIcon(white_pawn_7);
         JButton h7 = (JButton) chessBoard.getComponent(71);
-        h7.setIcon(white_pawn);
+        h7.setIcon(white_pawn_8);
         
 		layeredPane.addMouseListener(new MouseAdapter() {
        	 public void mouseClicked(MouseEvent e) {
@@ -217,7 +242,7 @@ public class Game implements Runnable {
 		// Status panel
 		final JPanel status_panel = new JPanel();
 		frame.add(status_panel, BorderLayout.SOUTH);
-		final JLabel status = new JLabel("Running...");
+		status = new JLabel("Running...");
 		status_panel.add(status);
 
 		// Main playing area
@@ -258,11 +283,24 @@ public class Game implements Runnable {
 		    public void mouseClicked(MouseEvent e) {
 		    	if (pressed == true) { 
 		    		pressed = false;
-		    		chessBoardSquares[i][j].setIcon(image);
+		    		if (image.isLegal(i+1,j+1)) {		    		
+		    			chessBoardSquares[i][j].setIcon(image);
+		    			chessBoardSquares[image_x][image_y].setIcon(new ImageIcon(new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)));
 		    		}
+		    		else {
+		    			status = new JLabel("invalid");
+		    		}
+		    	}
 		    	else {
 		    		pressed = true;
-		    		image = (ImageIcon) chessBoardSquares[i][j].getIcon();
+		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
+		    			image = (Piece) chessBoardSquares[i][j].getIcon();
+		    			image_x = i; 
+		    			image_y = j;
+		    		}
+		    		else {
+		    			//stub
+		    		}
 		    	}
 		    }
 		   });
