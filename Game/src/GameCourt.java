@@ -116,11 +116,9 @@ public class GameCourt extends JPanel {
 
 			// check for the game end conditions
 			if (square.intersects(poison)) {
-				playing = false;
 				status.setText("You lose!");
 
 			} else if (square.intersects(snitch)) {
-				playing = false;
 				status.setText("You win!");
 			}
 

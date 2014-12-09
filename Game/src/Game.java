@@ -70,7 +70,8 @@ public class Game implements Runnable {
     final Pawn white_pawn_7 = new Pawn("white_pawn.png", 7, 7, 1);
     final Pawn white_pawn_8 = new Pawn("white_pawn.png", 8, 7, 1);
 
-
+    final JPanel status_panel = new JPanel();
+    
 	public void run() {
 		// NOTE : recall that the 'final' keyword notes inmutability
 		// even for local variables.
@@ -247,7 +248,6 @@ public class Game implements Runnable {
 		frame.add(chessBoard, BorderLayout.CENTER);
 		
 		// Status panel
-		final JPanel status_panel = new JPanel();
 		frame.add(status_panel, BorderLayout.SOUTH);
 		status = new JLabel("Running...");
 		status_panel.add(status);
@@ -392,62 +392,83 @@ public class Game implements Runnable {
 		    		}
 	
 			    		if (image.isLegal(i+1,j+1,occupied, color)) {
+			    			System.out.println("new x coordinate:");
+			    			System.out.println("" + (i+1));
+			    			System.out.println("new y coordinate:");
+			    			System.out.println("" + (j+1));
 			    			if (image.y_pos == 8 && image instanceof Pawn && image.col == 0) {
 			    				image = new Queen("black_queen.png",image.x_pos, 8, 0);
 			    			}
 			    			if (image.y_pos == 1 && image instanceof Pawn && image.col == 1) {
 			    				image = new Queen("white_queen.png",image.x_pos, 1, 0);
 			    			}
-			    			
-				    		if (image instanceof King) {
-				    			if (image.col == 0) {
-				    				blackking = new King("black_king.png", i+1, j+1, 0);
-				    				System.out.println("blackmoved");
-				    				System.out.println("" + (i+1));
-				    				System.out.println("" + (j+1));
-				    			}
-				    			else {
-				    				whiteking = new King("white_king.png", i+1, j+1, 1);
-				    			}
-				    		}
 				    		
 			    			ImageIcon oldIcon = (ImageIcon) chessBoardSquares[i][j].getIcon();
 			    			
-			    			if (!(inCheck())) {
+			    			if ((!(inCheck(blackking, 1))) && (!(inCheck(whiteking, 0)))) {
 				    			chessBoardSquares[i][j].setIcon(image);
 				    			if (image.col == 0) {
-				    				if (inCheckBlack()) {
+				    				System.out.println("in check?");
+				    				System.out.println(inCheck(blackking,1));
+				    				if (inCheck(blackking,1)) {
 				    					chessBoardSquares[i][j].setIcon(oldIcon);
 				    					System.out.print("woah there");
 				    				}
 				    				else {
 							    		chessBoardSquares[image_x][image_y].setIcon(blank);
-							    		if (turn == 0) {turn = 1;}
-							    		else {turn = 0;}
-				    				}
+							    		if (image instanceof King) {
+							    			if (image.col == 0) {
+							    				blackking = new King("black_king.png", i+1, j+1, 0);
+							    				System.out.println("blackmoved");
+							    			}
+							    			else {
+							    				whiteking = new King("white_king.png", i+1, j+1, 1);
+							    			}
+							    		}
+							    		if (turn == 0) {turn = 1; System.out.println("it's white's turn");}
+							    		else {turn = 0; System.out.println("it's black's turn");}
+				    				} 
 				    			}
 				    			if (image.col == 1) {
-				    				if (inCheckWhite()) {
+				    				if (inCheck(whiteking, 0)) {
 				    					chessBoardSquares[i][j].setIcon(oldIcon);
 				    					System.out.print("woah there");
 				    				}
 				    				else {
 							    		chessBoardSquares[image_x][image_y].setIcon(blank);
-							    		if (turn == 0) {turn = 1;}
-							    		else {turn = 0;}
+							    		if (image instanceof King) {
+							    			if (image.col == 0) {
+							    				blackking = new King("black_king.png", i+1, j+1, 0);
+							    				System.out.println("blackmoved");
+							    			}
+							    			else {
+							    				whiteking = new King("white_king.png", i+1, j+1, 1);
+							    			}
+							    		}
+							    		if (turn == 0) {turn = 1; System.out.println("it's white's turn");}
+							    		else {turn = 0; System.out.println("it's black's turn");}
 				    				}
 				    			}
 			    			}
 			    			else {
 			    				chessBoardSquares[i][j].setIcon(image);
-			    				if (inCheck()) {
+			    				if (inCheck(whiteking, 0) || inCheck(blackking, 1)) {
 			    					chessBoardSquares[i][j].setIcon(oldIcon);
 			    					System.out.print("error you are in check");
 			    				}
 			    				else {
 					    			chessBoardSquares[image_x][image_y].setIcon(blank);
-					    			if (turn == 0) {turn = 1;}
-					    			else {turn = 0;}
+						    		if (image instanceof King) {
+						    			if (image.col == 0) {
+						    				blackking = new King("black_king.png", i+1, j+1, 0);
+						    				System.out.println("blackmoved");
+						    			}
+						    			else {
+						    				whiteking = new King("white_king.png", i+1, j+1, 1);
+						    			}
+						    		}
+					    			if (turn == 0) {turn = 1; System.out.println("it's white's turn");}
+					    			else {turn = 0; System.out.println("it's black's turn");}
 			    				}
 			    			}
 			    			
@@ -493,107 +514,131 @@ public class Game implements Runnable {
 		   });
 	}
 	
-	public boolean inCheckBlack() {
+	public boolean inCheck(King king, int col) {
 		Piece column = new Piece("black_king.png");
-		for (int i = blackking.y_pos-2; i > 0 ; i--) {
-			if (chessBoardSquares[blackking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1][i].getIcon();
-				if (!((column instanceof Queen && column.col == 1) 
-						|| (column instanceof Rook && column.col == 1)))
+		for (int i = king.y_pos-2; i > 0 ; i--) {
+			if (chessBoardSquares[king.x_pos-1][i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1][i].getIcon();
+				if (!((column instanceof Queen && column.col == col) 
+						|| (column instanceof Rook && column.col == col)))
 						 {
 					break;
 				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 1) {
+				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
 					System.out.println("in_check");
+					status.setText("You're In Check!");
 					return true;
 				}
 			}
 		}
-		for (int i = blackking.y_pos; i < 8; i++) {
-			System.out.println("" + blackking.y_pos);
-			if (chessBoardSquares[blackking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1][i].getIcon();
-				System.out.println("trace");
-				if (!((column instanceof Queen && column.col == 1) 
-						|| (column instanceof Rook && column.col == 1)))
+		for (int i = king.y_pos; i < 8; i++) {
+			System.out.println("" + king.y_pos);
+			if (chessBoardSquares[king.x_pos-1][i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1][i].getIcon();
+				if (!((column instanceof Queen && column.col == col) 
+						|| (column instanceof Rook && column.col == col)))
 						 {
 					break;
 				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 1) {
+				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
 					System.out.println("in_check");
+					status.setText("You're In Check!");
+					return true;
+				}
+			}
+		}
+		for (int i = king.x_pos-2; i > 0 ; i--) {
+			if (chessBoardSquares[i][king.y_pos-1].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[i][king.y_pos-1].getIcon();
+				if (!((column instanceof Queen && column.col == col) 
+						|| (column instanceof Rook && column.col == col)))
+						 {
+					break;
+				}
+				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
+					System.out.println("in_check");
+					status.setText("You're In Check!");
+					return true;
+				}
+			}
+		}
+		for (int i = king.x_pos; i < 8; i++) {
+			System.out.println("" + king.y_pos);
+			if (chessBoardSquares[i][king.y_pos-1].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[i][king.y_pos-1].getIcon();
+				if (!((column instanceof Queen && column.col == col) 
+						|| (column instanceof Rook && column.col == col)))
+						 {
+					break;
+				}
+				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
+					System.out.println("in_check");
+					status.setText("You're In Check!");
 					return true;
 				}
 			}
 		}
 		int k;
-		k = Math.min(8-blackking.y_pos-1, blackking.x_pos-1);
+		k = Math.min(8-king.y_pos-1, king.x_pos-1);
 		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
+			if (chessBoardSquares[king.x_pos-1-i][king.y_pos-1+i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1-i][king.y_pos-1+i].getIcon();
+				if (!((column instanceof Bishop && column.col == col) 
+						|| (column instanceof Queen && column.col == col)))
 						 {
 					break;
 				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
-					System.out.println("in_check");
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
+					System.out.println("in_check_tester");
+					status.setText("You're In Check!");
 					return true;
 				}
 			}
 		}
-		k = Math.min(8-blackking.y_pos-1, 8-blackking.x_pos-1);
+		k = Math.min(8-king.y_pos-1, 8-king.x_pos-1);
 		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
+			if (chessBoardSquares[king.x_pos-1+i][king.y_pos-1+i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1+i][king.y_pos-1+i].getIcon();
+				if (!((column instanceof Bishop && column.col == col) 
+						|| (column instanceof Queen && column.col == col)))
 						 {
 					break;
 				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check");
+					status.setText("You're In Check!");
 					return true;
 				}
 			}
 		}
-		k = Math.min(blackking.y_pos-1, 8-blackking.x_pos-1);
+		k = Math.min(king.y_pos-1, 8-king.x_pos-1);
 		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
+			if (chessBoardSquares[king.x_pos-1+i][king.y_pos-1-i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1+i][king.y_pos-1-i].getIcon();
+				if (!((column instanceof Bishop && column.col == col) 
+						|| (column instanceof Queen && column.col == col)))
 						 {
 					break;
 				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check");
+					status.setText("You're In Check!");
 					return true;
 				}
 			}
 		}
-		k = Math.min(blackking.y_pos-1, blackking.x_pos-1);
+		k = Math.min(king.y_pos-1, king.x_pos-1);
 		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
+			if (chessBoardSquares[king.x_pos-1-i][king.y_pos-1-i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1-i][king.y_pos-1-i].getIcon();
+				if (!((column instanceof Bishop && column.col == col) 
+						|| (column instanceof Queen && column.col == col)))
 						 {
 					break;
 				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check");
+					status.setText("You're In Check!");
 					return true;
 				}
 			}
@@ -607,510 +652,51 @@ public class Game implements Runnable {
 		ImageIcon op7 = new Piece("black_queen");
 		ImageIcon op8 = new Piece("black_queen");
 		
-		try {op1 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+2][blackking.y_pos-1+1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+1][blackking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op3 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-2][blackking.y_pos-1+1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op4 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-1][blackking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op5 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-1][blackking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op6 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-2][blackking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op7 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+1][blackking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op8 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+2][blackking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
+		try {op1 = (ImageIcon) chessBoardSquares[king.x_pos-1+2][king.y_pos-1+1].getIcon();} 
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op2 = (ImageIcon) chessBoardSquares[king.x_pos-1+1][king.y_pos-1+2].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op3 = (ImageIcon) chessBoardSquares[king.x_pos-1-2][king.y_pos-1+1].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op4 = (ImageIcon) chessBoardSquares[king.x_pos-1-1][king.y_pos-1+2].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op5 = (ImageIcon) chessBoardSquares[king.x_pos-1-1][king.y_pos-1-2].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op6 = (ImageIcon) chessBoardSquares[king.x_pos-1-2][king.y_pos-1-1].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op7 = (ImageIcon) chessBoardSquares[king.x_pos-1+1][king.y_pos-1-2].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op8 = (ImageIcon) chessBoardSquares[king.x_pos-1+2][king.y_pos-1-1].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
 		
-		if ((op1 instanceof Knight && ((Knight) op1).col == 1) ||
-			(op2 instanceof Knight && ((Knight) op2).col == 1) ||
-			(op3 instanceof Knight && ((Knight) op3).col == 1) ||
-			(op4 instanceof Knight && ((Knight) op4).col == 1) ||
-			(op5 instanceof Knight && ((Knight) op5).col == 1) ||
-			(op6 instanceof Knight && ((Knight) op6).col == 1) ||
-			(op7 instanceof Knight && ((Knight) op7).col == 1) ||
-			(op8 instanceof Knight && ((Knight) op8).col == 1))
+		if ((op1 instanceof Knight && ((Knight) op1).col == col) ||
+			(op2 instanceof Knight && ((Knight) op2).col == col) ||
+			(op3 instanceof Knight && ((Knight) op3).col == col) ||
+			(op4 instanceof Knight && ((Knight) op4).col == col) ||
+			(op5 instanceof Knight && ((Knight) op5).col == col) ||
+			(op6 instanceof Knight && ((Knight) op6).col == col) ||
+			(op7 instanceof Knight && ((Knight) op7).col == col) ||
+			(op8 instanceof Knight && ((Knight) op8).col == col))
 		{
 			System.out.println("in_check");
+			status.setText("You're In Check!");
 			return true;
 		}	
 		
-		try {op1 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-1][blackking.y_pos-1+1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+1][blackking.y_pos-1+1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
+		try {op1 = (ImageIcon) chessBoardSquares[king.x_pos-1-1][king.y_pos-1+1].getIcon();} 
+		catch (ArrayIndexOutOfBoundsException e) {}
+		try {op2 = (ImageIcon) chessBoardSquares[king.x_pos-1+1][king.y_pos-1+1].getIcon();}
+		catch (ArrayIndexOutOfBoundsException e) {}
 		
-		if ((op1 instanceof Pawn && ((Pawn) op1).col == 1) ||
-		(op2 instanceof Pawn && ((Pawn) op2).col == 1))
+		if ((op1 instanceof Pawn && ((Pawn) op1).col == col) ||
+		(op2 instanceof Pawn && ((Pawn) op2).col == col))
 		{
 			System.out.println("in_check");
+			status.setText("You're In Check!");
 			return true;
 		}
 		
 		return false;
-	}
-	
-	public boolean inCheckWhite() {
-		Piece column = new Piece("black_king.png");
-		for (int i = whiteking.y_pos; i < 8; i++) {
-			if (chessBoardSquares[whiteking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1][i].getIcon();
-				if (!((column instanceof Queen && column.col == 0) 
-						|| (column instanceof Rook && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		for (int i = whiteking.y_pos-2; i > 0; i--) {
-			if (chessBoardSquares[whiteking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1][i].getIcon();
-				if (!((column instanceof Queen && column.col == 0)
-						|| (column instanceof Rook && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		int k;
-		k = Math.min(8-whiteking.y_pos-1, whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(8-whiteking.y_pos-1, 8-whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(whiteking.y_pos-1, 8-whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(whiteking.y_pos-1, whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		
-		ImageIcon op1 = new Piece("black_queen");
-		ImageIcon op2 = new Piece("black_queen");
-		ImageIcon op3 = new Piece("black_queen");
-		ImageIcon op4 = new Piece("black_queen");
-		ImageIcon op5 = new Piece("black_queen");
-		ImageIcon op6 = new Piece("black_queen");
-		ImageIcon op7 = new Piece("black_queen");
-		ImageIcon op8 = new Piece("black_queen");
-		
-		try {op1 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+2][whiteking.y_pos-1+1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+1][whiteking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op3 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-2][whiteking.y_pos-1+1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op4 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-1][whiteking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op5 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-1][whiteking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op6 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-2][whiteking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op7 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+1][whiteking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op8 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+2][whiteking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		
-		if ((op1 instanceof Knight && ((Knight) op1).col == 0) ||
-			(op2 instanceof Knight && ((Knight) op2).col == 0) ||
-			(op3 instanceof Knight && ((Knight) op3).col == 0) ||
-			(op4 instanceof Knight && ((Knight) op4).col == 0) ||
-			(op5 instanceof Knight && ((Knight) op5).col == 0) ||
-			(op6 instanceof Knight && ((Knight) op6).col == 0) ||
-			(op7 instanceof Knight && ((Knight) op7).col == 0) ||
-			(op8 instanceof Knight && ((Knight) op8).col == 0))
-		{
-			System.out.println("in_check");
-			return true;
-		}	
-		
-		try {op1 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-1][whiteking.y_pos-1-1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+1][whiteking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		
-		if ((op1 instanceof Pawn && ((Pawn) op1).col == 0) ||
-		(op2 instanceof Pawn && ((Pawn) op2).col == 0))
-		{
-			System.out.println("in_check");
-			return true;
-		}
-		
-		return false;
-	}
-	
-	
-	public boolean inCheck() {
-		Piece column = new Piece("black_king.png");
-		for (int i = blackking.y_pos-2; i > 0 ; i--) {
-			if (chessBoardSquares[blackking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1][i].getIcon();
-				if (!((column instanceof Queen && column.col == 1) 
-						|| (column instanceof Rook && column.col == 1)))
-						 {
-					break;
-				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 1) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		for (int i = blackking.y_pos; i < 8; i++) {
-			System.out.println("" + blackking.y_pos);
-			if (chessBoardSquares[blackking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1][i].getIcon();
-				System.out.println("trace");
-				if (!((column instanceof Queen && column.col == 1) 
-						|| (column instanceof Rook && column.col == 1)))
-						 {
-					break;
-				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 1) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		for (int i = whiteking.y_pos; i < 8; i++) {
-			if (chessBoardSquares[whiteking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1][i].getIcon();
-				if (!((column instanceof Queen && column.col == 0) 
-						|| (column instanceof Rook && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		for (int i = whiteking.y_pos-2; i > 0; i--) {
-			if (chessBoardSquares[whiteking.x_pos-1][i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1][i].getIcon();
-				if (!((column instanceof Queen && column.col == 0)
-						|| (column instanceof Rook && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Queen || column instanceof Rook) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		int k;
-		k = Math.min(8-blackking.y_pos-1, blackking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(8-blackking.y_pos-1, 8-blackking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(blackking.y_pos-1, 8-blackking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1+i][blackking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(blackking.y_pos-1, blackking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[blackking.x_pos-1-i][blackking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 1) 
-						|| (column instanceof Queen && column.col == 1)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 1) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(8-whiteking.y_pos-1, whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(8-whiteking.y_pos-1, 8-whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1+i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1+i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(whiteking.y_pos-1, 8-whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1+i][whiteking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		k = Math.min(whiteking.y_pos-1, whiteking.x_pos-1);
-		for (int i = 1; i < k ; i++) {
-			System.out.println("wegothere");
-			System.out.println("k");
-			System.out.println("" + k);
-			if (chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1-i].getIcon() instanceof Piece) {
-				column = (Piece) chessBoardSquares[whiteking.x_pos-1-i][whiteking.y_pos-1-i].getIcon();
-				if (!((column instanceof Bishop && column.col == 0) 
-						|| (column instanceof Queen && column.col == 0)))
-						 {
-					break;
-				}
-				if ((column instanceof Bishop || column instanceof Queen) && column.col == 0) {
-					System.out.println("in_check");
-					return true;
-				}
-			}
-		}
-		ImageIcon op1 = new Piece("black_queen");
-		ImageIcon op2 = new Piece("black_queen");
-		ImageIcon op3 = new Piece("black_queen");
-		ImageIcon op4 = new Piece("black_queen");
-		ImageIcon op5 = new Piece("black_queen");
-		ImageIcon op6 = new Piece("black_queen");
-		ImageIcon op7 = new Piece("black_queen");
-		ImageIcon op8 = new Piece("black_queen");
-		
-		try {op1 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+2][blackking.y_pos-1+1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+1][blackking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op3 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-2][blackking.y_pos-1+1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op4 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-1][blackking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op5 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-1][blackking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op6 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-2][blackking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op7 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+1][blackking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op8 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+2][blackking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		
-		if ((op1 instanceof Knight && ((Knight) op1).col == 1) ||
-			(op2 instanceof Knight && ((Knight) op2).col == 1) ||
-			(op3 instanceof Knight && ((Knight) op3).col == 1) ||
-			(op4 instanceof Knight && ((Knight) op4).col == 1) ||
-			(op5 instanceof Knight && ((Knight) op5).col == 1) ||
-			(op6 instanceof Knight && ((Knight) op6).col == 1) ||
-			(op7 instanceof Knight && ((Knight) op7).col == 1) ||
-			(op8 instanceof Knight && ((Knight) op8).col == 1))
-		{
-			System.out.println("in_check");
-			return true;
-		}	
-		
-		try {op1 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+2][whiteking.y_pos-1+1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+1][whiteking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op3 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-2][whiteking.y_pos-1+1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op4 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-1][whiteking.y_pos-1+2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op5 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-1][whiteking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op6 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-2][whiteking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op7 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+1][whiteking.y_pos-1-2].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op8 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+2][whiteking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		
-		if ((op1 instanceof Knight && ((Knight) op1).col == 0) ||
-			(op2 instanceof Knight && ((Knight) op2).col == 0) ||
-			(op3 instanceof Knight && ((Knight) op3).col == 0) ||
-			(op4 instanceof Knight && ((Knight) op4).col == 0) ||
-			(op5 instanceof Knight && ((Knight) op5).col == 0) ||
-			(op6 instanceof Knight && ((Knight) op6).col == 0) ||
-			(op7 instanceof Knight && ((Knight) op7).col == 0) ||
-			(op8 instanceof Knight && ((Knight) op8).col == 0))
-		{
-			System.out.println("in_check");
-			return true;
-		}	
-		
-		try {op1 = (ImageIcon) chessBoardSquares[blackking.x_pos-1-1][blackking.y_pos-1+1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[blackking.x_pos-1+1][blackking.y_pos-1+1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		
-		if ((op1 instanceof Pawn && ((Pawn) op1).col == 1) ||
-		(op2 instanceof Pawn && ((Pawn) op2).col == 1))
-		{
-			System.out.println("in_check");
-			return true;
-		}
-		
-		try {op1 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1-1][whiteking.y_pos-1-1].getIcon();} 
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		try {op2 = (ImageIcon) chessBoardSquares[whiteking.x_pos-1+1][whiteking.y_pos-1-1].getIcon();}
-		catch (ArrayIndexOutOfBoundsException e) {System.out.println("caught");}
-		
-		if ((op1 instanceof Pawn && ((Pawn) op1).col == 0) ||
-		(op2 instanceof Pawn && ((Pawn) op2).col == 0))
-		{
-			System.out.println("in_check");
-			return true;
-		}
-		
-		System.out.println("not_in_check");
-		return false; 
 	}
 
 	/*
