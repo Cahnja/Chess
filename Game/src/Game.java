@@ -14,6 +14,7 @@ import javax.swing.border.LineBorder;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * Game Main class that specifies the frame and widgets of the GUI
@@ -37,7 +38,8 @@ public class Game implements Runnable {
 	King whiteking; 
 	JPanel chessBoard;
 	JPanel chessBoard2;
-
+	boolean hasNeverMovedWhite; 
+	boolean hasNeverMovedBlack;
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
     
@@ -47,7 +49,8 @@ public class Game implements Runnable {
     JLayeredPane layeredPane;
     
     public void reset() {
-    	
+    	hasNeverMovedBlack = true; 
+    	hasNeverMovedWhite = true; 
     	 final Rook black_rook = new Rook("black_rook.png", 1, 1, 0);
     	    final Knight black_knight = new Knight("black_knight.png", 2, 1, 0);
     	    final Bishop black_bishop = new Bishop("black_bishop.png", 3, 1, 0);
@@ -144,13 +147,10 @@ public class Game implements Runnable {
                         
                     default:
                         chessBoard2.add(chessBoardSquares[jj][ii]);
-                        System.out.println("trace");
                 }
             }
         }
-        
-        System.out.println(chessBoard2.getComponentCount());
-        
+                
         JButton a1 = (JButton) chessBoard2.getComponent(10);
         a1.setIcon(black_rook);
         JButton b1 = (JButton) chessBoard2.getComponent(11);
@@ -264,9 +264,7 @@ public class Game implements Runnable {
 				frame.add(chessBoard, BorderLayout.CENTER);
 				frame.revalidate();
 				frame.add(chessBoard, BorderLayout.CENTER);
-				frame.revalidate();
-				System.out.println(chessBoard.countComponents());
-				
+				frame.revalidate();				
 			}
 		});
 		
@@ -311,8 +309,6 @@ public class Game implements Runnable {
 				new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
-		    	System.out.println("" + (i+1));
-		    	System.out.println("" + (j+1));
 		    	int occupied;
 		    	int x_occupied;
 		    	int y_occupied;
@@ -325,9 +321,8 @@ public class Game implements Runnable {
 		    		occupied = 0;
 			    	x_occupied = 0; 
 			    	y_occupied = 0;
-
+					
 		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
-		    			System.out.println("occupied");
 		    			occupied = 1;
 		    			color = ((Piece) chessBoardSquares[i][j].getIcon()).col;
 		    		}
@@ -338,7 +333,6 @@ public class Game implements Runnable {
 			    			for (int l = 1; l<diff; l++) {
 			    				if (chessBoardSquares[i][k+l].getIcon() instanceof Piece) {
 					    			occupied = 2;
-					    			System.out.println("rooknotjumping_1");
 			    				}
 			    			}		
 		    			}
@@ -348,7 +342,6 @@ public class Game implements Runnable {
 			    			for (int l = 1; l<diff; l++) {
 			    				if (chessBoardSquares[k+l][j].getIcon() instanceof Piece) {
 					    			occupied = 2;
-					    			System.out.println("rooknotjumping_2");
 			    				}
 			    			}		
 		    			}
@@ -359,41 +352,29 @@ public class Game implements Runnable {
 		    			int x_diff = image.x_pos - (i+1); 
 		    			if (x_diff > 0 && y_diff > 0) {
 			    			for (int l = 1; l<Math.abs(x_diff); l++) {
-				    			System.out.println("" + (image.x_pos-l-1));
-				    			System.out.println("" + (image.y_pos-l-1));
 			    				if (chessBoardSquares[image.x_pos-1-l][image.y_pos-1-l].getIcon() instanceof Piece) {
 					    			occupied = 2;
-					    			System.out.println("bishopnotjumping_1");
 			    				}
 			    			}		
 		    			}
 		    			if (x_diff > 0 && y_diff < 0) {
 			    			for (int l = 1; l<Math.abs(x_diff); l++) {
-				    			System.out.println("" + (image.x_pos+l-1));
-				    			System.out.println("" + (image.y_pos+l-1));
 			    				if (chessBoardSquares[image.x_pos-1-l][image.y_pos-1+l].getIcon() instanceof Piece) {
 					    			occupied = 2;
-					    			System.out.println("bishopnotjumping_2");
 			    				}
 			    			}
 		    			}
 		    			if (x_diff < 0 && y_diff > 0) {
 			    			for (int l = 1; l<Math.abs(x_diff); l++) {
-				    			System.out.println("" + (image.x_pos+l-1));
-				    			System.out.println("" + (image.y_pos+l-1));
 			    				if (chessBoardSquares[image.x_pos-1+l][image.y_pos-1-l].getIcon() instanceof Piece) {
 					    			occupied = 2;
-					    			System.out.println("bishopnotjumping_3");
 			    				}
 			    			}
 		    			}
 		    			if (x_diff < 0 && y_diff < 0) {
 			    			for (int l = 1; l<Math.abs(x_diff); l++) {
-				    			System.out.println("" + (image.x_pos+l-1));
-				    			System.out.println("" + (image.y_pos+l-1));
 			    				if (chessBoardSquares[image.x_pos-1+l][image.y_pos-1+l].getIcon() instanceof Piece) {
 					    			occupied = 2;
-					    			System.out.println("bishopnotjumping_4");
 			    				}
 			    			}
 		    			}
@@ -405,26 +386,18 @@ public class Game implements Runnable {
 		    				if (Math.abs(i+1 - whiteking.x_pos) < 2 &&
 		    						Math.abs(j+1-whiteking.y_pos) < 2) {
 		    					occupied = 2;
-		    					System.out.println("toocloseblack");
 		    				}
 		    			}
 		    			else {
 		    				if (Math.abs(i+1 - blackking.x_pos) < 2 &&
 		    						Math.abs(j+1-blackking.y_pos) < 2) {
 		    					occupied = 2;
-		    					System.out.println("tooclosewhite");
 		    				}
 		    			}
 		    		}
-		    		System.out.println("occupied");
-		    		System.out.println(occupied);
+		    		
+		    		
 			    		if (image.isLegal(i+1,j+1,occupied, color)) {
-				    		System.out.println("yo");
-
-			    			System.out.println("new x coordinate:");
-			    			System.out.println("" + (i+1));
-			    			System.out.println("new y coordinate:");
-			    			System.out.println("" + (j+1));
 			    			if (image.y_pos == 8 && image instanceof Pawn && image.col == 0) {
 			    				image = new Queen("black_queen.png",image.x_pos, 8, 0);
 			    			}
@@ -436,86 +409,110 @@ public class Game implements Runnable {
 			    			
 			    			if ((!(inCheck(blackking, 1))) && (!(inCheck(whiteking, 0)))) {
 				    			chessBoardSquares[i][j].setIcon(image);
+					    		chessBoardSquares[image_x][image_y].setIcon(blank);
 				    			if (image.col == 0) {
-				    				System.out.println("in check?");
-				    				System.out.println(inCheck(blackking,1));
 				    				if (inCheck(blackking,1)) {
 				    					chessBoardSquares[i][j].setIcon(oldIcon);
-				    					System.out.print("woah there");
+				    					chessBoardSquares[image_x][image_y].setIcon(image);
 				    				}
 				    				else {
-							    		chessBoardSquares[image_x][image_y].setIcon(blank);
 							    		if (image instanceof King) {
 							    			if (image.col == 0) {
 							    				blackking = new King("black_king.png", i+1, j+1, 0);
-							    				System.out.println("blackmoved");
 							    			}
 							    			else {
 							    				whiteking = new King("white_king.png", i+1, j+1, 1);
 							    			}
+							    	    	hasNeverMovedBlack = false; 
+							    	    	hasNeverMovedWhite = false; 
 							    		}
 							    		if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
 							    		else {turn = 0; status2.setText("It's Black's Turn     ");}
 						    			status3.setText("Valid Move. Next Turn.");
-
+						    			if (inCheck(blackking, 1) || inCheck(whiteking, 0)) {
+							    			status.setText("You're In Check!     ");
+						    			}
+						    			if (isCheckmate(blackking)) {
+												JOptionPane.showMessageDialog(chessBoard, "white wins");
+											}
+										if (isCheckmate(whiteking)) {
+											JOptionPane.showMessageDialog(chessBoard, "black wins");
+										}
 				    				} 
 				    			}
 				    			if (image.col == 1) {
 				    				if (inCheck(whiteking, 0)) {
 				    					chessBoardSquares[i][j].setIcon(oldIcon);
-				    					System.out.print("woah there");
+							    		chessBoardSquares[image_x][image_y].setIcon(image);
 				    				}
 				    				else {
-							    		chessBoardSquares[image_x][image_y].setIcon(blank);
 							    		if (image instanceof King) {
 							    			if (image.col == 0) {
 							    				blackking = new King("black_king.png", i+1, j+1, 0);
-							    				System.out.println("blackmoved");
 							    			}
 							    			else {
 							    				whiteking = new King("white_king.png", i+1, j+1, 1);
 							    			}
+							    	    	hasNeverMovedBlack = false; 
+							    	    	hasNeverMovedWhite = false; 
 							    		}
 							    		if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
 							    		else {turn = 0; status2.setText("It's Black's Turn     ");}
 						    			status3.setText("Valid Move. Next Turn.");
+						    			if (inCheck(blackking, 1) || inCheck(whiteking, 0)) {
+							    			status.setText("You're In Check!     ");
+						    			}
+						    			if (isCheckmate(blackking)) {
+											JOptionPane.showMessageDialog(chessBoard, "white wins");
+										}
+										if (isCheckmate(whiteking)) {
+											JOptionPane.showMessageDialog(chessBoard, "black wins");
+										}
 				    				}
 				    			}
 			    			}
 			    			else {
 			    				chessBoardSquares[i][j].setIcon(image);
+				    			chessBoardSquares[image_x][image_y].setIcon(blank);
 			    				if (inCheck(whiteking, 0) || inCheck(blackking, 1)) {
 			    					chessBoardSquares[i][j].setIcon(oldIcon);
+			    					chessBoardSquares[image_x][image_y].setIcon(image);
 			    					System.out.print("error you are in check");
 			    				}
 			    				else {
-					    			chessBoardSquares[image_x][image_y].setIcon(blank);
 						    		if (image instanceof King) {
 						    			if (image.col == 0) {
 						    				blackking = new King("black_king.png", i+1, j+1, 0);
-						    				System.out.println("blackmoved");
 						    			}
 						    			else {
 						    				whiteking = new King("white_king.png", i+1, j+1, 1);
 						    			}
+						    	    	hasNeverMovedBlack = false; 
+						    	    	hasNeverMovedWhite = false;
 						    		}
 					    			if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
 					    			else {turn = 0; status2.setText("It's Black's Turn     ");}
 					    			status3.setText("Valid Move. Next Turn.");
+					    			if (inCheck(blackking, 1) || inCheck(whiteking, 0)) {
+						    			status.setText("You're In Check!     ");
+					    			}
+					    			if (isCheckmate(blackking)) {
+										JOptionPane.showMessageDialog(chessBoard, "white wins");
+									}
+									if (isCheckmate(whiteking)) {
+										JOptionPane.showMessageDialog(chessBoard, "black wins");
+									}
 			    				}
 			    			}
 			    			
 			    		}
 		    		else {
 		    			status3.setText("Invalid Move. Try Again.");
-			    		System.out.println("yo2");
 		    		}
 		    	}
 		    	else {
 		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
-		    			System.out.println("help!");
 		    			image = (Piece) chessBoardSquares[i][j].getIcon();
-		    			System.out.println(image.toString());
 		    			if (turn == image.col) {
 			    			image_x = i; 
 			    			image_y = j;
@@ -523,7 +520,6 @@ public class Game implements Runnable {
 		    			
 				    		if (image instanceof Rook) {
 				    			image = (Rook) image;
-				    			System.out.println("rookmoved");
 				    			}
 				    		if (image instanceof Queen) {
 				    			image = (Queen) image;
@@ -533,7 +529,6 @@ public class Game implements Runnable {
 				    		}
 				    		if (image instanceof Pawn) {
 				    			image = (Pawn) image; 
-				    			System.out.println("pawno");
 				    		}
 				    		if (image instanceof Knight) {
 				    			image = (Knight) image; 
@@ -573,7 +568,6 @@ public class Game implements Runnable {
 			}
 		}
 		for (int i = king.y_pos; i < 8; i++) {
-			System.out.println("" + king.y_pos);
 			if (chessBoardSquares[king.x_pos-1][i].getIcon() instanceof Piece) {
 				column = (Piece) chessBoardSquares[king.x_pos-1][i].getIcon();
 				if (!((column instanceof Queen && column.col == col) 
@@ -604,7 +598,6 @@ public class Game implements Runnable {
 			}
 		}
 		for (int i = king.x_pos; i < 8; i++) {
-			System.out.println("" + king.y_pos);
 			if (chessBoardSquares[i][king.y_pos-1].getIcon() instanceof Piece) {
 				column = (Piece) chessBoardSquares[i][king.y_pos-1].getIcon();
 				if (!((column instanceof Queen && column.col == col) 
@@ -620,7 +613,7 @@ public class Game implements Runnable {
 			}
 		}
 		int k;
-		k = Math.min(8-king.y_pos-1, king.x_pos-1);
+		k = Math.min(8-king.y_pos+1, king.x_pos);
 		for (int i = 1; i < k ; i++) {
 			if (chessBoardSquares[king.x_pos-1-i][king.y_pos-1+i].getIcon() instanceof Piece) {
 				column = (Piece) chessBoardSquares[king.x_pos-1-i][king.y_pos-1+i].getIcon();
@@ -636,7 +629,7 @@ public class Game implements Runnable {
 				}
 			}
 		}
-		k = Math.min(8-king.y_pos-1, 8-king.x_pos-1);
+		k = Math.min(8-king.y_pos+1, 8-king.x_pos+1);
 		for (int i = 1; i < k ; i++) {
 			if (chessBoardSquares[king.x_pos-1+i][king.y_pos-1+i].getIcon() instanceof Piece) {
 				column = (Piece) chessBoardSquares[king.x_pos-1+i][king.y_pos-1+i].getIcon();
@@ -652,7 +645,7 @@ public class Game implements Runnable {
 				}
 			}
 		}
-		k = Math.min(king.y_pos-1, 8-king.x_pos-1);
+		k = Math.min(king.y_pos, 8-king.x_pos+1);
 		for (int i = 1; i < k ; i++) {
 			if (chessBoardSquares[king.x_pos-1+i][king.y_pos-1-i].getIcon() instanceof Piece) {
 				column = (Piece) chessBoardSquares[king.x_pos-1+i][king.y_pos-1-i].getIcon();
@@ -668,7 +661,7 @@ public class Game implements Runnable {
 				}
 			}
 		}
-		k = Math.min(king.y_pos-1, king.x_pos-1);
+		k = Math.min(king.y_pos, king.x_pos);
 		for (int i = 1; i < k ; i++) {
 			if (chessBoardSquares[king.x_pos-1-i][king.y_pos-1-i].getIcon() instanceof Piece) {
 				column = (Piece) chessBoardSquares[king.x_pos-1-i][king.y_pos-1-i].getIcon();
@@ -739,6 +732,304 @@ public class Game implements Runnable {
 		
 		status.setText("You're Not In Check!     ");
 		return false;
+	}
+	
+	public boolean isCheckmate(King king) {
+		Piece column;
+		int opp_col = 0;
+		if (king.col == 0) {opp_col = 1;}
+		if (king.col == 1) {opp_col = 0;}
+		ArrayList xspots = new ArrayList();
+		ArrayList yspots = new ArrayList();
+		if (!(inCheck(king, opp_col))) {return false;}
+		if (checkLocation(king.x_pos+1, king.y_pos+1, king)) {return false;}
+		if (checkLocation(king.x_pos+1, king.y_pos-1, king)) {return false;}
+		if (checkLocation(king.x_pos-1, king.y_pos+1, king)) {return false;}
+		if (checkLocation(king.x_pos-1, king.y_pos-1, king)) {return false;}
+		if (checkLocation(king.x_pos, king.y_pos+1, king)) {return false;}
+		if (checkLocation(king.x_pos, king.y_pos-1, king)) {return false;}
+		if (checkLocation(king.x_pos+1, king.y_pos, king)) {return false;}
+		if (checkLocation(king.x_pos-1, king.y_pos, king)) {return false;}	
+		System.out.println("trace");
+		for (int i = king.y_pos-2; i > 0 ; i--) {
+			ImageIcon image = (ImageIcon) chessBoardSquares[king.x_pos-1][i].getIcon();
+			
+			if (image instanceof Piece) {
+				column = (Piece) image;
+				if (!((column instanceof Queen && column.col == opp_col) 
+						|| (column instanceof Rook && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Queen || column instanceof Rook) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							System.out.println("hello");
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(king.x_pos-1);
+				yspots.add(i);
+			}
+		}
+		
+		xspots.clear();
+		yspots.clear();
+		
+		for (int i = king.y_pos; i < 8; i++) {
+			ImageIcon image = (ImageIcon) chessBoardSquares[king.x_pos-1][i].getIcon();
+			
+			if (image instanceof Piece) {
+				column = (Piece) image;
+				if (!((column instanceof Queen && column.col == opp_col) 
+						|| (column instanceof Rook && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Queen || column instanceof Rook) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(king.x_pos-1);
+				yspots.add(i);
+			}
+		}
+		
+		xspots.clear();
+		yspots.clear();
+		
+		for (int i = king.x_pos-2; i > 0 ; i--) {
+			ImageIcon image = (ImageIcon) chessBoardSquares[i][king.y_pos-1].getIcon();
+
+			if (image instanceof Piece) {
+				column = (Piece) image;
+				if (!((column instanceof Queen && column.col == opp_col) 
+						|| (column instanceof Rook && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Queen || column instanceof Rook) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(i);
+				yspots.add(king.y_pos-1);
+			}
+		}
+		
+		xspots.clear();
+		yspots.clear();
+		
+		for (int i = king.x_pos; i < 8; i++) {
+			ImageIcon image = (ImageIcon) chessBoardSquares[i][king.y_pos-1].getIcon();
+
+			if (image instanceof Piece) {
+				column = (Piece) image;
+				if (!((column instanceof Queen && column.col == opp_col) 
+						|| (column instanceof Rook && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Queen || column instanceof Rook) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(i);
+				yspots.add(king.y_pos-1);
+			}
+		}
+		
+		int k;
+		k = Math.min(8-king.y_pos+1, king.x_pos);
+		for (int i = 1; i < k ; i++) {
+			if (chessBoardSquares[king.x_pos-1-i][king.y_pos-1+i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1-i][king.y_pos-1+i].getIcon();
+				if (!((column instanceof Bishop && column.col == opp_col) 
+						|| (column instanceof Queen && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(king.x_pos-1-i);
+				yspots.add(king.y_pos-1+i);
+			}
+		}
+		
+		k = Math.min(8-king.y_pos+1, 8-king.x_pos+1);
+		for (int i = 1; i < k ; i++) {
+			if (chessBoardSquares[king.x_pos-1+i][king.y_pos-1+i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1+i][king.y_pos-1+i].getIcon();
+				if (!((column instanceof Bishop && column.col == opp_col) 
+						|| (column instanceof Queen && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(king.x_pos-1+i);
+				yspots.add(king.y_pos-1+i);
+			}
+		}
+		
+		k = Math.min(king.y_pos, 8-king.x_pos+1);
+		for (int i = 1; i < k ; i++) {
+			if (chessBoardSquares[king.x_pos-1+i][king.y_pos-1-i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1+i][king.y_pos-1-i].getIcon();
+				if (!((column instanceof Bishop && column.col == opp_col) 
+						|| (column instanceof Queen && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(king.x_pos-1+i);
+				yspots.add(king.y_pos-1-i);
+			}
+		}
+		
+		k = Math.min(king.y_pos, king.x_pos);
+		for (int i = 1; i < k ; i++) {
+			if (chessBoardSquares[king.x_pos-1-i][king.y_pos-1-i].getIcon() instanceof Piece) {
+				column = (Piece) chessBoardSquares[king.x_pos-1-i][king.y_pos-1-i].getIcon();
+				if (!((column instanceof Bishop && column.col == opp_col) 
+						|| (column instanceof Queen && column.col == opp_col)))
+						 {
+					break;
+				}
+				if ((column instanceof Bishop || column instanceof Queen) && column.col == opp_col) {
+					for (int l = 0; l < xspots.size(); l++) {
+						System.out.println("hello");
+						if (canMoveTo(king, (int) xspots.get(l), (int) yspots.get(l))) {
+							return false;
+						}
+					}
+						
+				}
+			}
+			else {
+				xspots.add(king.x_pos-1-i);
+				yspots.add(king.y_pos-1-i);
+			}
+		}
+		
+		System.out.println("checkmate");
+		return true;
+	}
+	
+	private boolean canMoveTo(King king, int x, int y) {
+    	ImageIcon blank = new ImageIcon(new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB)); 
+		int opp_col = 0;
+		if (king.col == 0) {opp_col = 1;}
+		if (king.col == 1) {opp_col = 0;}
+		
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				ImageIcon image = (ImageIcon) chessBoardSquares[i][j].getIcon(); 
+				if (image instanceof Piece) {
+					if (((Piece) image).isLegal2(x, y, 0, ((Piece) image).col)) {
+						chessBoardSquares[(int) x][(int) y].setIcon(image);
+						if (!(inCheck(king, opp_col))) {
+							chessBoardSquares[(int) x][(int) y].setIcon(blank);
+							return true;
+						}
+						else {
+							chessBoardSquares[(int) x][(int) y].setIcon(blank);
+						}
+					}
+				}
+			}
+	    }
+		return false;	
+		
+	}	
+	
+	public boolean checkLocation(int i, int j, King king) {
+		int occupied = 0; 
+		int opp_col = 0;
+		
+		if (king.col == 0) {opp_col = 1;}
+		if (king.col == 1) {opp_col = 0;}
+		
+		try {
+		if (chessBoardSquares[i-1][j-1].getIcon() instanceof Piece) {
+			occupied = 1;
+		}
+		if (king.col == 0) {
+			if (Math.abs(i+1 - whiteking.x_pos) < 2 &&
+					Math.abs(j+1-whiteking.y_pos) < 2) {
+				occupied = 2;
+			}
+		}
+		if (king.col == 1) {
+			if (Math.abs(i+1 - blackking.x_pos) < 2 &&
+					Math.abs(j+1-blackking.y_pos) < 2) {
+				occupied = 2;
+			}
+		}
+		if (king.isLegal2(i,j, occupied, king.col)) {
+			if (!(inCheck(new King("black_king.png", i, j, king.col), opp_col))) {
+				return true;
+			}
+		}
+		return false;
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("caught");
+			return false;
+		}		
 	}
 
 	/*

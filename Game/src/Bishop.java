@@ -24,5 +24,19 @@ public class Bishop extends Piece {
 			return false;
 		}
 	}
+	
+	public boolean isLegal2(int i, int j, int occupied, int color) {
+		if (occupied == 0 || (occupied == 1 && this.col != color)) {
+			if ( (this.y_pos-j != 0) && ((Math.abs(this.x_pos - i))/(Math.abs(this.y_pos-j)) == 1)) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
+	}
 
 }

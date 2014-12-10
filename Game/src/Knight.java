@@ -30,5 +30,24 @@ public class Knight extends Piece{
 			return false;
 		}
 	}
+	
+	public boolean isLegal2(int i, int j, int occupied, int color) {
+		if (occupied == 0 || (occupied == 1 && this.col != color)) {
+			if ((Math.abs(this.x_pos - i) == 2 && Math.abs(this.y_pos - j) == 1)
+				|| (Math.abs(this.x_pos - i) == 1 && Math.abs(this.y_pos - j) == 2)) {
+				System.out.println("trace1");
+				return true;
+			}
+			else { 
+				System.out.println("trace2");
+				System.out.println("" + (Math.abs(this.x_pos - i)));
+				return false;
+			}
+		}
+		else {
+			System.out.println("trace3");
+			return false;
+		}
+	}
 
 }

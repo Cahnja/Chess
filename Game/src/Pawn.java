@@ -81,5 +81,66 @@ public class Pawn extends Piece{
 			}
 		}
 	}
+	
+	public boolean isLegal2(int i, int j, int occupied, int color) {
+		if (this.col == 0) {
+			if (occupied == 0) {
+				System.out.println("tracing_time_black");
+				if ((i - this.x_pos) == 0 && (j - this.y_pos) == 1) {
+					return true;
+				}
+				if (this.y_pos == 2 && i - this.x_pos == 0 && j - this.y_pos == 2) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				if (this.col == color) {
+					return false;
+				}
+				else {
+					if (Math.abs(i - this.x_pos) == 1 && (j - this.y_pos) == 1) {						
+			    		System.out.println("trace");
+						return true; 
+					}
+					else { 
+						return false;
+					}
+				}
+			}
+		}
+		
+		else {
+			if (occupied == 0) {
+				System.out.println(this.y_pos);
+				System.out.println(this.y_pos);
+				if ((i - this.x_pos) == 0 && (this.y_pos - j) == 1) {
+					return true;
+				}
+				if (this.y_pos == 7 && this.x_pos - i == 0 && this.y_pos - j == 2) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			else {
+				if (this.col == color) {
+					return false;
+				}
+				else {
+					if (Math.abs(i - this.x_pos) == 1 && (this.y_pos - j) == 1) {
+						return true; 
+					}
+
+					else { 
+						return false;
+					}
+				}
+			}
+		}
+	}
 			
 }

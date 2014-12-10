@@ -21,4 +21,15 @@ public class Rook extends Piece {
 			return false;
 		}
 	}
+	
+	public boolean isLegal2(int i, int j, int occupied, int color) {
+		System.out.println("" + occupied);
+		if ((occupied == 0 && (i - this.x_pos == 0 || j - this.y_pos == 0)) ||
+			(occupied == 1 && this.col != color)) {
+				return true;
+			}
+		else {
+			return false;
+		}
+	}
 }

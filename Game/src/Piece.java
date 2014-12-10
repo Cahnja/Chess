@@ -20,5 +20,9 @@ public class Piece extends ImageIcon{
 	public boolean isLegal(int i, int j, int occupied, int color) {
 		return true;
 	}
+	
+	public boolean isLegal2(int i, int j, int occupied, int color) {
+		return true;
+	}
 
 }
