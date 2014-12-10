@@ -29,79 +29,82 @@ public class Game implements Runnable {
 	JButton[][] chessBoardSquares;
 	JLabel status;
 	JLabel status2;
+	JLabel status3;
 	int image_x; 
 	int image_y;
 	int image_color;
 	King blackking;
 	King whiteking; 
+	JPanel chessBoard;
+	JPanel chessBoard2;
+
 	
     static Font font = new Font("Sans-Serif", Font.PLAIN, 50);
     
-    final Rook black_rook = new Rook("black_rook.png", 1, 1, 0);
-    final Knight black_knight = new Knight("black_knight.png", 2, 1, 0);
-    final Bishop black_bishop = new Bishop("black_bishop.png", 3, 1, 0);
-    final Queen black_queen = new Queen("black_queen.png",4, 1, 0);   
-    final King black_king = new King("black_king.png", 5, 1, 0);
-    final Bishop black_bishop_2 = new Bishop("black_bishop.png", 6, 1, 0);
-    final Knight black_knight_2 = new Knight("black_knight.png", 7, 1, 0);
-    final Rook black_rook_2 = new Rook("black_rook.png", 8, 1, 0);
-    final Pawn black_pawn = new Pawn("black_pawn.png",1, 2, 0);
-    final Pawn black_pawn_2 = new Pawn("black_pawn.png",2, 2, 0);
-    final Pawn black_pawn_3 = new Pawn("black_pawn.png",3, 2, 0);
-    final Pawn black_pawn_4 = new Pawn("black_pawn.png",4, 2, 0);
-    final Pawn black_pawn_5 = new Pawn("black_pawn.png",5, 2, 0);
-    final Pawn black_pawn_6 = new Pawn("black_pawn.png",6, 2, 0);
-    final Pawn black_pawn_7 = new Pawn("black_pawn.png",7, 2, 0);
-    final Pawn black_pawn_8 = new Pawn("black_pawn.png",8, 2, 0);
-    
-    final Rook white_rook = new Rook("white_rook.png", 1, 8, 1);
-    final Knight white_knight = new Knight("white_knight.png", 2, 8, 1);
-    final Bishop white_bishop = new Bishop("white_bishop.png", 3, 8, 1);
-    final Queen white_queen = new Queen("white_queen.png", 4, 8, 1);   
-    final King white_king = new King("white_king.png", 5, 8, 1);
-    final Bishop white_bishop_2 = new Bishop("white_bishop.png", 6, 8, 1);
-    final Knight white_knight_2 = new Knight("white_knight.png", 7, 8, 1);
-    final Rook white_rook_2 = new Rook("white_rook.png", 8, 8, 1);
-    final Pawn white_pawn = new Pawn("white_pawn.png", 1, 7, 1);
-    final Pawn white_pawn_2 = new Pawn("white_pawn.png", 2, 7, 1);
-    final Pawn white_pawn_3 = new Pawn("white_pawn.png", 3, 7, 1);
-    final Pawn white_pawn_4 = new Pawn("white_pawn.png", 4, 7, 1);
-    final Pawn white_pawn_5 = new Pawn("white_pawn.png", 5, 7, 1);
-    final Pawn white_pawn_6 = new Pawn("white_pawn.png", 6, 7, 1);
-    final Pawn white_pawn_7 = new Pawn("white_pawn.png", 7, 7, 1);
-    final Pawn white_pawn_8 = new Pawn("white_pawn.png", 8, 7, 1);
+   
 
     final JPanel status_panel = new JPanel();
+    JLayeredPane layeredPane;
     
     public void reset() {
     	
-    	//stub
-    }
-    
-    
-	public void run() {
-		// NOTE : recall that the 'final' keyword notes inmutability
-		// even for local variables.
-
-		// Top-level frame in which game components live
-		// Be sure to change "TOP LEVEL FRAME" to the name of your game		
-		
+    	 final Rook black_rook = new Rook("black_rook.png", 1, 1, 0);
+    	    final Knight black_knight = new Knight("black_knight.png", 2, 1, 0);
+    	    final Bishop black_bishop = new Bishop("black_bishop.png", 3, 1, 0);
+    	    final Queen black_queen = new Queen("black_queen.png",4, 1, 0);   
+    	    final King black_king = new King("black_king.png", 5, 1, 0);
+    	    final Bishop black_bishop_2 = new Bishop("black_bishop.png", 6, 1, 0);
+    	    final Knight black_knight_2 = new Knight("black_knight.png", 7, 1, 0);
+    	    final Rook black_rook_2 = new Rook("black_rook.png", 8, 1, 0);
+    	    final Pawn black_pawn = new Pawn("black_pawn.png",1, 2, 0);
+    	    final Pawn black_pawn_2 = new Pawn("black_pawn.png",2, 2, 0);
+    	    final Pawn black_pawn_3 = new Pawn("black_pawn.png",3, 2, 0);
+    	    final Pawn black_pawn_4 = new Pawn("black_pawn.png",4, 2, 0);
+    	    final Pawn black_pawn_5 = new Pawn("black_pawn.png",5, 2, 0);
+    	    final Pawn black_pawn_6 = new Pawn("black_pawn.png",6, 2, 0);
+    	    final Pawn black_pawn_7 = new Pawn("black_pawn.png",7, 2, 0);
+    	    final Pawn black_pawn_8 = new Pawn("black_pawn.png",8, 2, 0);
+    	    
+    	    final Rook white_rook = new Rook("white_rook.png", 1, 8, 1);
+    	    final Knight white_knight = new Knight("white_knight.png", 2, 8, 1);
+    	    final Bishop white_bishop = new Bishop("white_bishop.png", 3, 8, 1);
+    	    final Queen white_queen = new Queen("white_queen.png", 4, 8, 1);   
+    	    final King white_king = new King("white_king.png", 5, 8, 1);
+    	    final Bishop white_bishop_2 = new Bishop("white_bishop.png", 6, 8, 1);
+    	    final Knight white_knight_2 = new Knight("white_knight.png", 7, 8, 1);
+    	    final Rook white_rook_2 = new Rook("white_rook.png", 8, 8, 1);
+    	    final Pawn white_pawn = new Pawn("white_pawn.png", 1, 7, 1);
+    	    final Pawn white_pawn_2 = new Pawn("white_pawn.png", 2, 7, 1);
+    	    final Pawn white_pawn_3 = new Pawn("white_pawn.png", 3, 7, 1);
+    	    final Pawn white_pawn_4 = new Pawn("white_pawn.png", 4, 7, 1);
+    	    final Pawn white_pawn_5 = new Pawn("white_pawn.png", 5, 7, 1);
+    	    final Pawn white_pawn_6 = new Pawn("white_pawn.png", 6, 7, 1);
+    	    final Pawn white_pawn_7 = new Pawn("white_pawn.png", 7, 7, 1);
+    	    final Pawn white_pawn_8 = new Pawn("white_pawn.png", 8, 7, 1);
+    	
 		pressed = false;
 		turn = 1;
 		image = new Piece("black_rook.png");
 
 	    final String COLS = "ABCDEFGH";
-		final JFrame frame = new JFrame("TOP LEVEL FRAME");
-		frame.setLocation(300, 300);
 		
 		blackking = black_king;
 		whiteking = white_king;
 		
-		JLayeredPane layeredPane = new JLayeredPane();
+		status = new JLabel("You're Not In Check     ");
+		status2 = new JLabel("It's White's Turn      ");
+		status3 = new JLabel("Please Make a Valid Move");
+
+		status_panel.removeAll();
+		status_panel.add(status2);
+		status_panel.add(status);
+		status_panel.add(status3);
+		
+		layeredPane = new JLayeredPane();
 	    chessBoardSquares = new JButton[8][8];
-		JPanel chessBoard = new JPanel(new GridLayout(9, 9));
-		chessBoard.setBorder(new LineBorder(Color.BLACK));
-		layeredPane.add(chessBoard);
+		chessBoard2 = new JPanel(new GridLayout(9, 9));
+		chessBoard2.setBorder(new LineBorder(Color.BLACK));
+		layeredPane.add(chessBoard2);
 		
 		Insets buttonMargin = new Insets(0,0,0,0);
 		for (int ii = 0; ii < chessBoardSquares.length; ii++) {
@@ -125,9 +128,9 @@ public class Game implements Runnable {
 			}
 		}
 		
-        chessBoard.add(new JLabel(""));
+        chessBoard2.add(new JLabel(""));
         for (int ii = 0; ii < 8; ii++) {
-            chessBoard.add(
+            chessBoard2.add(
                     new JLabel(COLS.substring(ii, ii + 1),
                     SwingConstants.CENTER));
         }
@@ -136,151 +139,159 @@ public class Game implements Runnable {
             for (int jj = 0; jj < 8; jj++) {
                 switch (jj) {
                     case 0:
-                        chessBoard.add(new JLabel("" + (ii + 1),
+                        chessBoard2.add(new JLabel("" + (ii + 1),
                                 SwingConstants.CENTER));
                         
                     default:
-                        chessBoard.add(chessBoardSquares[jj][ii]);
+                        chessBoard2.add(chessBoardSquares[jj][ii]);
+                        System.out.println("trace");
                 }
             }
         }
         
-        System.out.println(chessBoard.getComponentCount());
+        System.out.println(chessBoard2.getComponentCount());
         
-        JButton a1 = (JButton) chessBoard.getComponent(10);
+        JButton a1 = (JButton) chessBoard2.getComponent(10);
         a1.setIcon(black_rook);
-        JButton b1 = (JButton) chessBoard.getComponent(11);
+        JButton b1 = (JButton) chessBoard2.getComponent(11);
         b1.setIcon(black_knight);
-        JButton c1 = (JButton) chessBoard.getComponent(12);
+        JButton c1 = (JButton) chessBoard2.getComponent(12);
         c1.setIcon(black_bishop);
-        JButton d1 = (JButton) chessBoard.getComponent(13);
+        JButton d1 = (JButton) chessBoard2.getComponent(13);
         d1.setIcon(black_queen);
-        JButton e1 = (JButton) chessBoard.getComponent(14);
+        JButton e1 = (JButton) chessBoard2.getComponent(14);
         e1.setIcon(black_king);
-        JButton f1 = (JButton) chessBoard.getComponent(15);
+        JButton f1 = (JButton) chessBoard2.getComponent(15);
         f1.setIcon(black_bishop_2);
-        JButton g1 = (JButton) chessBoard.getComponent(16);
+        JButton g1 = (JButton) chessBoard2.getComponent(16);
         g1.setIcon(black_knight_2);
-        JButton h1 = (JButton) chessBoard.getComponent(17);
+        JButton h1 = (JButton) chessBoard2.getComponent(17);
         h1.setIcon(black_rook_2);
-        JButton a2 = (JButton) chessBoard.getComponent(19);
+        JButton a2 = (JButton) chessBoard2.getComponent(19);
         a2.setIcon(black_pawn);
-        JButton b2 = (JButton) chessBoard.getComponent(20);
+        JButton b2 = (JButton) chessBoard2.getComponent(20);
         b2.setIcon(black_pawn_2);
-        JButton c2 = (JButton) chessBoard.getComponent(21);
+        JButton c2 = (JButton) chessBoard2.getComponent(21);
         c2.setIcon(black_pawn_3);
-        JButton d2 = (JButton) chessBoard.getComponent(22);
+        JButton d2 = (JButton) chessBoard2.getComponent(22);
         d2.setIcon(black_pawn_4);
-        JButton e2 = (JButton) chessBoard.getComponent(23);
+        JButton e2 = (JButton) chessBoard2.getComponent(23);
         e2.setIcon(black_pawn_5);
-        JButton f2 = (JButton) chessBoard.getComponent(24);
+        JButton f2 = (JButton) chessBoard2.getComponent(24);
         f2.setIcon(black_pawn_6);
-        JButton g2 = (JButton) chessBoard.getComponent(25);
+        JButton g2 = (JButton) chessBoard2.getComponent(25);
         g2.setIcon(black_pawn_7);
-        JButton h2 = (JButton) chessBoard.getComponent(26);
+        JButton h2 = (JButton) chessBoard2.getComponent(26);
         h2.setIcon(black_pawn_8);
         
-        JButton a8 = (JButton) chessBoard.getComponent(73);
+        JButton a8 = (JButton) chessBoard2.getComponent(73);
         a8.setIcon(white_rook);
-        JButton b8 = (JButton) chessBoard.getComponent(74);
+        JButton b8 = (JButton) chessBoard2.getComponent(74);
         b8.setIcon(white_knight);
-        JButton c8 = (JButton) chessBoard.getComponent(75);
+        JButton c8 = (JButton) chessBoard2.getComponent(75);
         c8.setIcon(white_bishop);
-        JButton d8 = (JButton) chessBoard.getComponent(76);
+        JButton d8 = (JButton) chessBoard2.getComponent(76);
         d8.setIcon(white_queen);
-        JButton e8 = (JButton) chessBoard.getComponent(77);
+        JButton e8 = (JButton) chessBoard2.getComponent(77);
         e8.setIcon(white_king);
-        JButton f8 = (JButton) chessBoard.getComponent(78);
+        JButton f8 = (JButton) chessBoard2.getComponent(78);
         f8.setIcon(white_bishop_2);
-        JButton g8 = (JButton) chessBoard.getComponent(79);
+        JButton g8 = (JButton) chessBoard2.getComponent(79);
         g8.setIcon(white_knight_2);
-        JButton h8 = (JButton) chessBoard.getComponent(80);
+        JButton h8 = (JButton) chessBoard2.getComponent(80);
         h8.setIcon(white_rook_2);
-        JButton a7 = (JButton) chessBoard.getComponent(64);
+        JButton a7 = (JButton) chessBoard2.getComponent(64);
         a7.setIcon(white_pawn);
-        JButton b7 = (JButton) chessBoard.getComponent(65);
+        JButton b7 = (JButton) chessBoard2.getComponent(65);
         b7.setIcon(white_pawn_2);
-        JButton c7 = (JButton) chessBoard.getComponent(66);
+        JButton c7 = (JButton) chessBoard2.getComponent(66);
         c7.setIcon(white_pawn_3);
-        JButton d7 = (JButton) chessBoard.getComponent(67);
+        JButton d7 = (JButton) chessBoard2.getComponent(67);
         d7.setIcon(white_pawn_4);
-        JButton e7 = (JButton) chessBoard.getComponent(68);
+        JButton e7 = (JButton) chessBoard2.getComponent(68);
         e7.setIcon(white_pawn_5);
-        JButton f7 = (JButton) chessBoard.getComponent(69);
+        JButton f7 = (JButton) chessBoard2.getComponent(69);
         f7.setIcon(white_pawn_6);
-        JButton g7 = (JButton) chessBoard.getComponent(70);
+        JButton g7 = (JButton) chessBoard2.getComponent(70);
         g7.setIcon(white_pawn_7);
-        JButton h7 = (JButton) chessBoard.getComponent(71);
+        JButton h7 = (JButton) chessBoard2.getComponent(71);
         h7.setIcon(white_pawn_8);
-        
-		layeredPane.addMouseListener(new MouseAdapter() {
-       	 public void mouseClicked(MouseEvent e) {
-       		System.out.println("please");
-		    	if (pressed == true) { 
-		    		Component c = chessBoard.getComponentAt(e.getX(), e.getY());
-		    		System.out.println(
-		    				chessBoard.getComponentAt(e.getX(), e.getY()).equals(
-		    				chessBoard.getComponent(10))
-		    			);
-		    		System.out.println(c.toString());
-
-		    		
-		    		}
-		    	}
-       });	
-		
-        chessBoard.addMouseListener(new MouseAdapter() {
-        	 public void mouseClicked(MouseEvent e) {
-        		System.out.println("fuck");
- 		    	if (pressed == true) { 
- 		    		Component c = chessBoard.getComponentAt(e.getX(), e.getY());
- 		    		System.out.println(
- 		    				chessBoard.getComponentAt(e.getX(), e.getY()).equals(
- 		    				chessBoard.getComponent(10))
- 		    			);
- 		    		System.out.println(c.toString());
- 		    		System.out.println(e.getX());
- 		    		System.out.println(e.getY());
- 		    		
- 		    		}
- 		    	}
-        });	
         
         for (int i = 0; i < 8; i++) {
         	for (int j = 0; j < 8; j++) {
         		listenUp(i, j);	
         	}
         }
-             
-		frame.add(chessBoard, BorderLayout.CENTER);
-		
+        
+        chessBoard = chessBoard2;
+    }
+    
+	public void run() {
+		// NOTE : recall that the 'final' keyword notes inmutability
+		// even for local variables.
+
+		// Top-level frame in which game components live
+		// Be sure to change "TOP LEVEL FRAME" to the name of your game		
+	
+        reset(); 
+
+		final JFrame frame = new JFrame("CHESS GAME BY JACK CAHN");
+		frame.setLocation(300, 300);
+				
 		// Status panel
 		frame.add(status_panel, BorderLayout.SOUTH);
-		status = new JLabel("You're Not In Check");
-		status2 = new JLabel("It's White's Turn      ");
-		status_panel.add(status2);
-		status_panel.add(status);
 
 		// Main playing area
-		final GameCourt court = new GameCourt(status);
 		frame.add(chessBoard, BorderLayout.CENTER);
 
 		// Reset button
 		final JPanel control_panel = new JPanel();
 		frame.add(control_panel, BorderLayout.NORTH);
 
-		// Note here that when we add an action listener to the reset
-		// button, we define it as an anonymous inner class that is
-		// an instance of ActionListener with its actionPerformed()
-		// method overridden. When the button is pressed,
-		// actionPerformed() will be called.
 		final JButton reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent e) {
+				for (int i = 0; i < 8; i++) {
+					for (int j = 0; j < 8; j++) {
+						chessBoardSquares[i][j].removeAll();
+					}
+			    }	
+				chessBoard.removeAll();
+
+				frame.remove(chessBoard);
 				reset();
+				frame.add(chessBoard, BorderLayout.CENTER);
+				frame.revalidate();
+				frame.add(chessBoard, BorderLayout.CENTER);
+				frame.revalidate();
+				System.out.println(chessBoard.countComponents());
+				
 			}
 		});
+		
+		String instruction_text = 
+				"Overview:\n"
+				+ "Chess is a game played between two opponents on opposite sides of a board "
+				+ "containing 64 squares of alternating colors. \nEach player has 16 pieces: "
+				+ "1 king, 1 queen, 2 rooks, 2 bishops, 2 knights, and 8 pawns. \nThe goal of the game is "
+				+ "to checkmate the other king. \nCheckmate happens when the king is in a position to be captured "
+				+ "(in check) and cannot escape from capture.\n\n"
+				+ "You can find detailed rules regarding each piece here: http://en.wikipedia.org/wiki/Chess\n\n"
+				+ "In this implementation of chess, please click on the piece you want to move "
+				+ "\nand then click on the location where you would like to move it."
+				+ ""
+				;
+		final JButton instructions = new JButton("Instructions");
+		instructions.addActionListener(new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+	            JOptionPane.showMessageDialog(frame,
+	            		instruction_text, "Instructions", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		
 		control_panel.add(reset);
+		control_panel.add(instructions);
 
 		// Put the frame on the screen
 		frame.pack();
@@ -288,8 +299,11 @@ public class Game implements Runnable {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 
-		// Start game
-		court.reset();
+		// Note here that when we add an action listener to the reset
+		// button, we define it as an anonymous inner class that is
+		// an instance of ActionListener with its actionPerformed()
+		// method overridden. When the button is pressed,
+		// actionPerformed() will be called.
 	}
 
 	private void listenUp(int i, int j) {
@@ -297,6 +311,8 @@ public class Game implements Runnable {
 				new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
+		    	System.out.println("" + (i+1));
+		    	System.out.println("" + (j+1));
 		    	int occupied;
 		    	int x_occupied;
 		    	int y_occupied;
@@ -311,6 +327,7 @@ public class Game implements Runnable {
 			    	y_occupied = 0;
 
 		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
+		    			System.out.println("occupied");
 		    			occupied = 1;
 		    			color = ((Piece) chessBoardSquares[i][j].getIcon()).col;
 		    		}
@@ -399,8 +416,11 @@ public class Game implements Runnable {
 		    				}
 		    			}
 		    		}
-	
+		    		System.out.println("occupied");
+		    		System.out.println(occupied);
 			    		if (image.isLegal(i+1,j+1,occupied, color)) {
+				    		System.out.println("yo");
+
 			    			System.out.println("new x coordinate:");
 			    			System.out.println("" + (i+1));
 			    			System.out.println("new y coordinate:");
@@ -436,6 +456,8 @@ public class Game implements Runnable {
 							    		}
 							    		if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
 							    		else {turn = 0; status2.setText("It's Black's Turn     ");}
+						    			status3.setText("Valid Move. Next Turn.");
+
 				    				} 
 				    			}
 				    			if (image.col == 1) {
@@ -456,6 +478,7 @@ public class Game implements Runnable {
 							    		}
 							    		if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
 							    		else {turn = 0; status2.setText("It's Black's Turn     ");}
+						    			status3.setText("Valid Move. Next Turn.");
 				    				}
 				    			}
 			    			}
@@ -478,17 +501,21 @@ public class Game implements Runnable {
 						    		}
 					    			if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
 					    			else {turn = 0; status2.setText("It's Black's Turn     ");}
+					    			status3.setText("Valid Move. Next Turn.");
 			    				}
 			    			}
 			    			
 			    		}
 		    		else {
-		    			status = new JLabel("invalid");
+		    			status3.setText("Invalid Move. Try Again.");
+			    		System.out.println("yo2");
 		    		}
 		    	}
 		    	else {
 		    		if (chessBoardSquares[i][j].getIcon() instanceof Piece) {
+		    			System.out.println("help!");
 		    			image = (Piece) chessBoardSquares[i][j].getIcon();
+		    			System.out.println(image.toString());
 		    			if (turn == image.col) {
 			    			image_x = i; 
 			    			image_y = j;
@@ -506,6 +533,7 @@ public class Game implements Runnable {
 				    		}
 				    		if (image instanceof Pawn) {
 				    			image = (Pawn) image; 
+				    			System.out.println("pawno");
 				    		}
 				    		if (image instanceof Knight) {
 				    			image = (Knight) image; 
@@ -516,7 +544,11 @@ public class Game implements Runnable {
 				    		else {
 				    			//stub
 				    		}
+			    			status3.setText("Valid Entry. Choose Where To Move.");
 		    			}
+		    		}
+		    		else {
+		    			status3.setText("Invalid Entry. Try Again.");
 		    		}
 		    	}
 		    }
@@ -535,7 +567,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -551,7 +583,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -566,7 +598,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -582,7 +614,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Queen || column instanceof Rook) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -599,7 +631,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check_tester");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -615,7 +647,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -631,7 +663,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -647,7 +679,7 @@ public class Game implements Runnable {
 				}
 				if ((column instanceof Bishop || column instanceof Queen) && column.col == col) {
 					System.out.println("in_check");
-					status.setText("You're In Check!");
+					status.setText("You're In Check!     ");
 					return true;
 				}
 			}
@@ -688,7 +720,7 @@ public class Game implements Runnable {
 			(op8 instanceof Knight && ((Knight) op8).col == col))
 		{
 			System.out.println("in_check");
-			status.setText("You're In Check!");
+			status.setText("You're In Check!     ");
 			return true;
 		}	
 		
@@ -701,11 +733,11 @@ public class Game implements Runnable {
 		(op2 instanceof Pawn && ((Pawn) op2).col == col))
 		{
 			System.out.println("in_check");
-			status.setText("You're In Check!");
+			status.setText("You're In Check!     ");
 			return true;
 		}
 		
-		status.setText("You're Not In Check!");
+		status.setText("You're Not In Check!     ");
 		return false;
 	}
 

@@ -12,6 +12,7 @@ public class Pawn extends Piece{
 	public boolean isLegal(int i, int j, int occupied, int color) {
 		if (this.col == 0) {
 			if (occupied == 0) {
+				System.out.println("tracing_time_black");
 				if ((i - this.x_pos) == 0 && (j - this.y_pos) == 1) {
 					this.x_pos = i; 
 					this.y_pos = j;
@@ -46,6 +47,8 @@ public class Pawn extends Piece{
 		
 		else {
 			if (occupied == 0) {
+				System.out.println(this.y_pos);
+				System.out.println(this.y_pos);
 				if ((i - this.x_pos) == 0 && (this.y_pos - j) == 1) {
 					this.x_pos = i; 
 					this.y_pos = j;
