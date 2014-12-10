@@ -28,6 +28,7 @@ public class Game implements Runnable {
 	int yAdjustment;
 	JButton[][] chessBoardSquares;
 	JLabel status;
+	JLabel status2;
 	int image_x; 
 	int image_y;
 	int image_color;
@@ -71,6 +72,12 @@ public class Game implements Runnable {
     final Pawn white_pawn_8 = new Pawn("white_pawn.png", 8, 7, 1);
 
     final JPanel status_panel = new JPanel();
+    
+    public void reset() {
+    	
+    	//stub
+    }
+    
     
 	public void run() {
 		// NOTE : recall that the 'final' keyword notes inmutability
@@ -249,7 +256,9 @@ public class Game implements Runnable {
 		
 		// Status panel
 		frame.add(status_panel, BorderLayout.SOUTH);
-		status = new JLabel("Running...");
+		status = new JLabel("You're Not In Check");
+		status2 = new JLabel("It's White's Turn      ");
+		status_panel.add(status2);
 		status_panel.add(status);
 
 		// Main playing area
@@ -268,7 +277,7 @@ public class Game implements Runnable {
 		final JButton reset = new JButton("Reset");
 		reset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				court.reset();
+				reset();
 			}
 		});
 		control_panel.add(reset);
@@ -425,8 +434,8 @@ public class Game implements Runnable {
 							    				whiteking = new King("white_king.png", i+1, j+1, 1);
 							    			}
 							    		}
-							    		if (turn == 0) {turn = 1; System.out.println("it's white's turn");}
-							    		else {turn = 0; System.out.println("it's black's turn");}
+							    		if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
+							    		else {turn = 0; status2.setText("It's Black's Turn     ");}
 				    				} 
 				    			}
 				    			if (image.col == 1) {
@@ -445,8 +454,8 @@ public class Game implements Runnable {
 							    				whiteking = new King("white_king.png", i+1, j+1, 1);
 							    			}
 							    		}
-							    		if (turn == 0) {turn = 1; System.out.println("it's white's turn");}
-							    		else {turn = 0; System.out.println("it's black's turn");}
+							    		if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
+							    		else {turn = 0; status2.setText("It's Black's Turn     ");}
 				    				}
 				    			}
 			    			}
@@ -467,8 +476,8 @@ public class Game implements Runnable {
 						    				whiteking = new King("white_king.png", i+1, j+1, 1);
 						    			}
 						    		}
-					    			if (turn == 0) {turn = 1; System.out.println("it's white's turn");}
-					    			else {turn = 0; System.out.println("it's black's turn");}
+					    			if (turn == 0) {turn = 1; status2.setText("It's White's Turn     ");}
+					    			else {turn = 0; status2.setText("It's Black's Turn     ");}
 			    				}
 			    			}
 			    			
@@ -696,6 +705,7 @@ public class Game implements Runnable {
 			return true;
 		}
 		
+		status.setText("You're Not In Check!");
 		return false;
 	}
 

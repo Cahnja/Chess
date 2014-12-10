@@ -92,7 +92,6 @@ public class GameCourt extends JPanel {
 		snitch = new Circle(COURT_WIDTH, COURT_HEIGHT);
 
 		playing = true;
-		status.setText("Running...");
 
 		// Make sure that this component has the keyboard focus
 		requestFocusInWindow();
@@ -116,10 +115,8 @@ public class GameCourt extends JPanel {
 
 			// check for the game end conditions
 			if (square.intersects(poison)) {
-				status.setText("You lose!");
 
 			} else if (square.intersects(snitch)) {
-				status.setText("You win!");
 			}
 
 			// update the display
